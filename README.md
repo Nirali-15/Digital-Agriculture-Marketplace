@@ -2,22 +2,22 @@
 
 Here are some screenshots showing the output of the project:
 
-![Home Page](Home.png)
+![Home Page](Output_Screenshots/Home.png)
 
-![About Us](About.png)
+![About Us](Output_Screenshots/About.png)
 
-![Register Page](Register.png)
+![Register Page](Output_Screenshots/Register.png)
 
-![Login](Login.png)
+![Login](Output_Screenshots/Login.png)
 
-![Seller](Seller_form.png)
+![Seller](Output_Screenshots/Seller_form.png)
 
-![Buyer](Buyer.png)
+![Buyer](Output_Screenshots/Buyer.png)
 
-![Products](Products.png)
+![Products](Output_Screenshots/Products.png)
 
-![place_order](order_products.png)
+![place order](Output_Screenshots/order_products.png)
 
-![Order](Order.png).
+![Order](Output_Screenshots/Order.png).
 
 
