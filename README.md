@@ -14,10 +14,10 @@ Here are some screenshots showing the output of the project:
 
 ![Buyer](Output_Screenshots/Buyer.png)
 
-![Products](Output_Screenshots/Products.png)
+![Products](Output_Screenshots/products.png)
 
 ![place order](Output_Screenshots/order_products.png)
 
-![Order](Output_Screenshots/Order.png).
+![Order](Output_Screenshots/order.png).
 
 
