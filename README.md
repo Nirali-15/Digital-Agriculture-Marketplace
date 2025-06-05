@@ -2,7 +2,7 @@
 
 Here are some screenshots showing the output of the project:
 
-![Home Page](Output_Screenshots/Home.png)
+![Home Page](Home.png)
 
 ![About Us](Output_Screenshots/About.png)
 
