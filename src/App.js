@@ -1,25 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
 import HomePage from './components/HomePage';
 import Services from './components/Services';
 import AboutUs from './components/AboutUs';
 import Help from './components/Help';
 import Footer from './components/Footer';
 import Login from './components/Login';
-import EcommercePage from './components/EcommercePage';
 import SignUp from './components/SignUp';
-import Seller from './components/Seller';
-import Products from "./components/Products";
-import ProductDetails from './components/ProductDetails';
+import SellerHomePage from './components/SellerHomePage';
 import Contact from './components/Contact';
+import BuyerHomePage from './components/BuyerHomePage';
+import AddProduct from './components/AddProduct';
+import Products from './components/Products';
+import './i18n.js';
 import './App.css';
 
-const App = () => {
-  const [products, setProducts] = useState([]); // State to store products
+function App() {
+  const [products, setProducts] = useState(() => {
+    const savedProducts = localStorage.getItem('products');
+    return savedProducts ? JSON.parse(savedProducts) : [];
+  });
 
-  // Function to add a product
+  useEffect(() => {
+    localStorage.setItem('products', JSON.stringify(products));
+  }, [products]);
+
   const addProduct = (product) => {
-    setProducts((prevProducts) => [...prevProducts, { ...product, id: prevProducts.length + 1 }]);
+    const updatedProducts = [...products, product];
+    setProducts(updatedProducts);
   };
 
   return (
@@ -33,15 +42,15 @@ const App = () => {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/ecommercepage" element={<EcommercePage />} />
-          <Route path="/seller" element={<Seller addProduct={addProduct} />} />
+          <Route path="/buyer" element={<BuyerHomePage />} />
+          <Route path="/seller" element={<SellerHomePage addProduct={addProduct} />} />
+          <Route path="/seller/add-product" element={<AddProduct onAddProduct={addProduct} />} />
           <Route path="/products" element={<Products products={products} />} />
-          <Route path="/product/:id" element={<ProductDetails products={products} />} />
         </Routes>
+        <Footer />
       </div>
-      <Footer />
     </Router>
   );
-};
+}
 
 export default App;

@@ -1,26 +1,45 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.jpg'; // Adjust the path to match your project structure
+import { useTranslation } from 'react-i18next';
 
 const Navbar = () => {
+  const { i18n, t } = useTranslation();
+
+  const handleLanguageChange = (e) => {
+    i18n.changeLanguage(e.target.value);
+  };
+
   return (
     <nav style={navStyle}>
       <div style={leftLogoStyle}>
         <img src={logo} alt="FarmFlow Logo" style={logoImageStyle} />
         <h5 style={logoTextStyle}>FarmFlow</h5>
       </div>
+
       <ul style={rightMenuStyle}>
         <li style={menuItemStyle}>
-          <Link to="/" style={linkStyle}>Home</Link>
+          <Link to="/" style={linkStyle}>{t("Home")}</Link>
         </li>
         <li style={menuItemStyle}>
-          <Link to="/services" style={linkStyle}>Services</Link>
+          <Link to="/services" style={linkStyle}>{t("Services")}</Link>
         </li>
         <li style={menuItemStyle}>
-          <Link to="/help" style={linkStyle}>Help</Link>
+          <Link to="/help" style={linkStyle}>{t("Help")}</Link>
         </li>
         <li style={menuItemStyle}>
-          <Link to="/login" style={loginBtnStyle}>Login</Link>
+          <Link to="/login" style={loginBtnStyle}>{t("Login")}</Link>
+        </li>
+        <li style={menuItemStyle}>
+          <select
+            onChange={handleLanguageChange}
+            value={i18n.language}
+            style={langDropdownStyle}
+          >
+            <option value="en">🌐 EN</option>
+            <option value="hi">🇮🇳 HI</option>
+            <option value="gu">🇮🇳 GU</option>
+          </select>
         </li>
       </ul>
     </nav>
@@ -42,17 +61,17 @@ const leftLogoStyle = {
 };
 
 const logoImageStyle = {
-  height: '50px', // Increased the height for a bigger logo
+  height: '50px',
   objectFit: 'contain',
-  marginRight: '10px', // Adds spacing between the logo and the text
+  marginRight: '10px',
 };
 
 const logoTextStyle = {
   color: 'white',
   wordSpacing: '2px',
-  fontSize: '28px', // Larger font size
+  fontSize: '28px',
   fontWeight: 'bold',
-  fontFamily: `'Poppins', sans-serif`, // Modern, clean font
+  fontFamily: `'Poppins', sans-serif`,
 };
 
 const rightMenuStyle = {
@@ -60,10 +79,11 @@ const rightMenuStyle = {
   margin: 0,
   padding: 0,
   display: 'flex',
+  alignItems: 'center',
 };
 
 const menuItemStyle = {
-  margin: '0 15px',
+  margin: '0 10px',
 };
 
 const linkStyle = {
@@ -79,10 +99,20 @@ const loginBtnStyle = {
   color: '#fff',
   fontSize: '18px',
   fontWeight: 'bold',
-  backgroundColor: '#32CD32', // Green color for the login button
+  backgroundColor: '#32CD32',
   padding: '8px 15px',
   borderRadius: '5px',
   transition: 'background-color 0.3s ease',
+};
+
+const langDropdownStyle = {
+  padding: '6px',
+  fontSize: '15px',
+  fontWeight: 'bold',
+  borderRadius: '4px',
+  border: 'none',
+  backgroundColor: '#fff',
+  cursor: 'pointer',
 };
 
 export default Navbar;

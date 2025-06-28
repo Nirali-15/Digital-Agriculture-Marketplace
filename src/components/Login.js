@@ -9,7 +9,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (role === "buyer") {
-      navigate('/ecommercepage'); // Navigate to the e-commerce page
+      navigate('/buyer'); // Navigate to the e-commerce page
     } else if (role === "seller") {
       navigate('/seller'); // Navigate to the seller page
     }
