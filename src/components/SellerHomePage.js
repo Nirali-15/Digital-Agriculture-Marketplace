@@ -59,7 +59,7 @@ const SellerHomePage = () => {
 
       {/* Hero Background */}
       <div style={{
-        backgroundImage: 'url("https://wallpapers.com/images/hd/farmer-1117-x-746-background-9g13j407zo8u5wf3.jpg")',
+        backgroundImage: 'url("https://w0.peakpx.com/wallpaper/824/628/HD-wallpaper-green-wheat-crops-green-wheat-nature-field-crops-thumbnail.jpg")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         height: '100vh',
