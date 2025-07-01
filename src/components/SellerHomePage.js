@@ -1,40 +1,40 @@
 // SellerHomePage.js
 import React from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../assets/logo.jpg'; // adjust as per your structure
+import logo from '../assets/logo.jpg';
 
 const SellerHomePage = () => {
   const advantages = [
     {
-      title: 'Wider Reach',
+      title: 'Wider Market Reach',
       image: 'https://cdn-icons-png.flaticon.com/512/2331/2331970.png',
-      description: 'Sell across the nation with our digital platform.'
+      description: 'Connect with buyers across India and boost your sales digitally.'
     },
     {
       title: 'Real-time Inventory',
       image: 'https://cdn-icons-png.flaticon.com/512/2769/2769758.png',
-      description: 'Manage products in real-time from anywhere.'
+      description: 'Update your stock and manage availability on the go.'
     },
     {
-      title: 'Secure Payments',
+      title: 'Secure & Instant Payments',
       image: 'https://cdn-icons-png.flaticon.com/512/3064/3064197.png',
-      description: 'Fast and secure payment system with full transparency.'
+      description: 'Experience quick and transparent payment transactions.'
     },
     {
-      title: 'Customer Insights',
+      title: 'Insightful Analytics',
       image: 'https://cdn-icons-png.flaticon.com/512/190/190411.png',
-      description: 'Know what your customers love through data.'
+      description: 'Gain valuable insights into customer preferences and market trends.'
     },
   ];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <div style={{ fontFamily: 'sans-serif', minHeight: '100vh' }}>
       {/* Navbar */}
       <nav style={{
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: '#2c3e50',
+        backgroundColor: '#34495e',
         padding: '1rem 2rem',
         color: 'white'
       }}>
@@ -57,49 +57,74 @@ const SellerHomePage = () => {
         </ul>
       </nav>
 
-      {/* Hero Background */}
-      <div style={{
-        backgroundImage: 'url("https://w0.peakpx.com/wallpaper/824/628/HD-wallpaper-green-wheat-crops-green-wheat-nature-field-crops-thumbnail.jpg")',
+      {/* Hero Section */}
+      <section style={{
+        backgroundImage: 'url("https://juagrisciences.com/uploads/blog/category/17107590941jpeg.jpeg")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        height: '100vh',
-        color: 'white',
+        height: '90vh',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
         justifyContent: 'center',
+        alignItems: 'center',
+        color: '#fff',
         textAlign: 'center',
         padding: '2rem'
       }}>
-        <h1 style={{ fontSize: '3rem' }}>Welcome to Your Seller Dashboard</h1>
-        <p style={{ fontSize: '1.2rem', marginTop: '1rem', maxWidth: '700px' }}>
-          Manage your listings, track orders, and grow your farm's reach with our seamless digital platform.
+        <h1 style={{
+          fontSize: '3.5rem',
+          marginBottom: '1rem',
+          backgroundColor: 'rgba(0,0,0,0.4)',
+          padding: '10px 20px',
+          borderRadius: '12px'
+        }}>
+          Grow Your Reach, Grow Your Farm
+        </h1>
+        <p style={{
+          fontSize: '1.3rem',
+          maxWidth: '800px',
+          marginBottom: '2rem',
+          backgroundColor: 'rgba(0,0,0,0.3)',
+          padding: '10px',
+          borderRadius: '10px'
+        }}>
+          Join the FarmFlow marketplace to connect with genuine buyers and manage your produce efficiently.
         </p>
-      </div>
+        <div>
+          <Link to="/seller/add-product" style={ctaButton}>Add Your Products</Link>
+          <Link to="/help" style={{
+            ...ctaButton,
+            backgroundColor: '#ffffff',
+            color: '#2e7d32',
+            marginLeft: '1rem'
+          }}>Need Help?</Link>
+        </div>
+      </section>
 
-      {/* Advantage Cards Section */}
-      <div style={{ padding: '4rem 2rem', backgroundColor: '#f9f9f9' }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '3rem' }}>Why Sell with Us?</h2>
+      {/* Advantage Section */}
+      <section style={{ padding: '4rem 2rem', backgroundColor: '#f2f2f2' }}>
+        <h2 style={{ textAlign: 'center', marginBottom: '2.5rem', color: '#2e7d32' }}>Why Sell with FarmFlow?</h2>
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
           gap: '2rem'
         }}>
-          {advantages.map((adv, idx) => (
-            <div key={idx} style={{
+          {advantages.map((item, index) => (
+            <div key={index} style={{
               background: '#ffffff',
               borderRadius: '12px',
-              padding: '1.5rem',
-              boxShadow: '0 0 10px rgba(0,0,0,0.1)',
-              textAlign: 'center'
+              padding: '2rem 1.5rem',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+              textAlign: 'center',
+              transition: 'transform 0.3s ease',
             }}>
-              <img src={adv.image} alt={adv.title} style={{ width: '100px', height: '100px', marginBottom: '1rem' }} />
-              <h3>{adv.title}</h3>
-              <p>{adv.description}</p>
+              <img src={item.image} alt={item.title} style={{ width: '70px', height: '70px', marginBottom: '1rem' }} />
+              <h3 style={{ color: '#2e7d32', fontSize: '1.2rem' }}>{item.title}</h3>
+              <p style={{ fontSize: '0.95rem', color: '#444' }}>{item.description}</p>
             </div>
           ))}
         </div>
-      </div>
+      </section>
     </div>
   );
 };
@@ -107,7 +132,19 @@ const SellerHomePage = () => {
 const navLink = {
   color: 'white',
   textDecoration: 'none',
-  fontWeight: 'bold'
+  fontWeight: 'bold',
+  fontSize: '1rem'
+};
+
+const ctaButton = {
+  padding: '0.8rem 1.5rem',
+  backgroundColor: '#2e7d32',
+  color: '#fff',
+  borderRadius: '8px',
+  textDecoration: 'none',
+  fontWeight: '600',
+  fontSize: '1rem',
+  transition: 'background-color 0.3s ease'
 };
 
 export default SellerHomePage;

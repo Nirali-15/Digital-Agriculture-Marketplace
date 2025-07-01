@@ -81,17 +81,17 @@ const AddProduct = ({ onAddProduct }) => {
 
     const compressedImages = await Promise.all(product.images.map(compressImage));
     const previewURLs = compressedImages.map((img) => URL.createObjectURL(img));
-    const sellerId = localStorage.getItem('sellerId'); // 🟩 Get seller ID from localStorage
+    const sellerId = localStorage.getItem('sellerId');
 
     const productData = {
       ...product,
       images: compressedImages,
       imagePreviews: previewURLs,
-      sellerId: sellerId, // 🟩 Add sellerId to product
+      sellerId,
     };
 
     onAddProduct(productData);
-    navigate('/products');
+    navigate('/seller/products'); // ✅ Absolute path fixed
   };
 
   const styles = {

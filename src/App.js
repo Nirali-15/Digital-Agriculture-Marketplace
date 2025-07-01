@@ -12,7 +12,9 @@ import SellerHomePage from './components/SellerHomePage';
 import Contact from './components/Contact';
 import BuyerHomePage from './components/BuyerHomePage';
 import AddProduct from './components/AddProduct';
-import Products from './components/Products';
+import SellerProductPage from './components/SellerProductPage';
+import BuyerProductPage from './components/BuyerProductPage';
+
 import './i18n.js';
 import './App.css';
 
@@ -27,8 +29,15 @@ function App() {
   }, [products]);
 
   const addProduct = (product) => {
-    const updatedProducts = [...products, product];
-    setProducts(updatedProducts);
+    setProducts((prev) => [...prev, product]);
+  };
+
+  const handleDeleteProduct = (indexToDelete) => {
+    setProducts((prev) => prev.filter((_, index) => index !== indexToDelete));
+  };
+
+  const handleAddToCart = (product) => {
+    console.log("Added to cart:", product);
   };
 
   return (
@@ -43,9 +52,24 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/buyer" element={<BuyerHomePage />} />
-          <Route path="/seller" element={<SellerHomePage addProduct={addProduct} />} />
+          <Route path="/seller" element={<SellerHomePage />} />
           <Route path="/seller/add-product" element={<AddProduct onAddProduct={addProduct} />} />
-          <Route path="/products" element={<Products products={products} />} />
+
+          <Route
+            path="/seller/products"
+            element={
+              <SellerProductPage
+                products={products}
+                setProducts={setProducts}
+                onDeleteProduct={handleDeleteProduct}
+              />
+            }
+          />
+
+          <Route
+            path="/buyer/products"
+            element={<BuyerProductPage products={products} onAddToCart={handleAddToCart} />}
+          />
         </Routes>
         <Footer />
       </div>
