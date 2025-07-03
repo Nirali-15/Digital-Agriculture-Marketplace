@@ -58,7 +58,12 @@ const AddProduct = () => {
 
   const compressImage = async (file) => {
     if (typeof file === 'string' && file.startsWith('data:image')) {
-      return file; // already base64
+      return file; // Already base64
+    }
+
+    if (!(file instanceof Blob)) {
+      console.warn('Skipped invalid image file:', file);
+      return null;
     }
 
     return new Promise((resolve) => {
@@ -115,12 +120,14 @@ const AddProduct = () => {
     const sellerId = localStorage.getItem('sellerId');
     const existingProducts = JSON.parse(localStorage.getItem('products')) || [];
 
-    const compressedImages = await Promise.all(
-      (product.images.length > 0
-        ? product.images
-        : editingProduct?.images || []
-      ).map((img) => compressImage(img))
-    );
+    const compressedImages = (
+      await Promise.all(
+        (product.images.length > 0
+          ? product.images
+          : editingProduct?.images || []
+        ).map((img) => compressImage(img))
+      )
+    ).filter(Boolean); // Remove any nulls
 
     const finalProduct = {
       ...product,

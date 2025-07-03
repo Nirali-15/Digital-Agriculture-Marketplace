@@ -15,6 +15,10 @@ import SellerProductPage from './components/SellerProductPage';
 import BuyerProductPage from './components/BuyerProductPage';
 import ProductDetails from './components/ProductDetails'; // ✅ Added
 import Footer from './components/Footer'; // ✅ Add this only if Footer exists
+import SelNotification from './components/SelNotification.js';
+//import BuyerRequest from './components/BuyerRequest.js';
+import BuyerRequest from './components/BuyerRequest';
+import Account from './components/Account.js';
 import './i18n.js';
 import './App.css';
 
@@ -73,8 +77,11 @@ function App() {
               />
             }
           />
-
+          <Route path="/notifications" element={<SelNotification />} />
+          {/* <Route path="/buyer/request" element={<BuyerRequest />} /> */}
+            <Route path="/buyer-requests" element={<BuyerRequest />} />
           {/* Buyer Route */}
+            <Route path="/account" element={<Account />} />
           <Route
             path="/buyer/products"
             element={<BuyerProductPage products={products} onAddToCart={handleAddToCart} />}
