@@ -1,188 +1,236 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.jpg";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [role, setRole] = useState("buyer");
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    role: "buyer",
+    rememberMe: false,
+  });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (role === "seller") {
-      localStorage.setItem('sellerId', email);  // ✅ Set seller ID
-      navigate('/seller');
-    } else {
-      localStorage.removeItem('sellerId');      // ✅ Clear seller ID for buyers
-      navigate('/buyer');
-    }
-  };
-
-  const handleForgotPassword = () => {
-    if (!email) {
-      alert("Please enter your email first.");
-      return;
-    }
-    alert(`Password reset link sent to ${email}`);
-  };
-
-  const togglePasswordVisibility = () => {
-    setPasswordVisible((prev) => !prev);
-  };
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const styles = {
     body: {
       margin: 0,
-      fontFamily: 'Arial, sans-serif',
-      background: "url('https://wallpaperaccess.com/full/3158925.jpg') no-repeat center center fixed",
-      backgroundSize: 'cover',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100vh',
+      fontFamily: "Arial, sans-serif",
+      background:
+        "url('https://wallpaperaccess.com/full/3158925.jpg') no-repeat center center fixed",
+      backgroundSize: "cover",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      minHeight: "100vh",
+      padding: "40px 20px",
+      boxSizing: "border-box",
     },
     container: {
-      width: '450px',
-      padding: '30px',
-      backgroundColor: 'rgba(255,255,255,0.95)',
-      borderRadius: '10px',
-      boxShadow: '0 8px 16px rgba(0,0,0,0.2)',
+      width: "100%",
+      maxWidth: "460px",
+      padding: "30px",
+      backgroundColor: "rgba(255,255,255,0.95)",
+      borderRadius: "12px",
+      boxShadow: "0 8px 20px rgba(0,0,0,0.2)",
     },
     logoImage: {
-      width: '140px',
-      height: '140px',
-      objectFit: 'contain',
-      display: 'block',
-      margin: '0 auto 20px auto',
+      width: "120px",
+      height: "120px",
+      objectFit: "contain",
+      display: "block",
+      margin: "0 auto 15px auto",
     },
     formHeader: {
-      fontSize: '28px',
-      fontWeight: 'bold',
-      color: '#1d4570',
-      textAlign: 'center',
-      marginBottom: '10px',
+      fontSize: "26px",
+      fontWeight: "bold",
+      color: "#1d4570",
+      textAlign: "center",
+      marginBottom: "10px",
     },
     formDescription: {
-      fontSize: '14px',
-      color: '#555',
-      textAlign: 'center',
-      marginBottom: '20px',
+      fontSize: "14px",
+      color: "#555",
+      textAlign: "center",
+      marginBottom: "20px",
     },
     formGroup: {
-      marginBottom: '20px',
+      marginBottom: "18px",
     },
     label: {
-      fontSize: '14px',
-      fontWeight: 'bold',
-      color: '#333',
-      marginBottom: '5px',
-      display: 'block',
+      fontSize: "14px",
+      fontWeight: "bold",
+      color: "#333",
+      marginBottom: "6px",
+      display: "block",
     },
     input: {
-      width: '100%',
-      padding: '10px',
-      fontSize: '14px',
-      border: '1px solid #ccc',
-      borderRadius: '4px',
-    },
-    passwordWrapper: {
-      position: 'relative',
-    },
-    toggleText: {
-      position: 'absolute',
-      right: '10px',
-      top: '50%',
-      transform: 'translateY(-50%)',
-      cursor: 'pointer',
-      fontSize: '13px',
-      color: '#1d4570',
+      width: "100%",
+      padding: "10px",
+      fontSize: "14px",
+      border: "1px solid #ccc",
+      borderRadius: "4px",
+      outline: "none",
     },
     formActions: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
+      textAlign: "center",
+      marginTop: "20px",
     },
     button: {
-      padding: '10px 20px',
-      backgroundColor: '#1d4570',
-      color: '#fff',
-      border: 'none',
-      borderRadius: '4px',
-      fontSize: '16px',
-      cursor: 'pointer',
+      padding: "10px 24px",
+      backgroundColor: "#1d4570",
+      color: "#fff",
+      border: "none",
+      borderRadius: "4px",
+      fontSize: "16px",
+      cursor: "pointer",
     },
     link: {
-      fontSize: '14px',
-      color: '#1d4570',
-      textDecoration: 'none',
-      cursor: 'pointer',
+      fontSize: "14px",
+      color: "#1d4570",
+      textDecoration: "none",
+    },
+    errorText: {
+      color: "red",
+      fontSize: "12px",
+      marginTop: "5px",
+    },
+    passwordToggle: {
+      position: "absolute",
+      right: "12px",
+      top: "35px",
+      cursor: "pointer",
+      fontSize: "13px",
+      color: "#1d4570",
+    },
+    passwordWrapper: {
+      position: "relative",
     },
     footerText: {
-      textAlign: 'center',
-      fontSize: '14px',
-      marginTop: '15px',
+      textAlign: "center",
+      fontSize: "14px",
+      marginTop: "20px",
     },
+  };
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newErrors = {};
+
+    if (!formData.email) {
+      newErrors.email = "Email is required.";
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email)
+    ) {
+      newErrors.email = "Invalid email format.";
+    }
+
+    if (!formData.password) {
+      newErrors.password = "Password is required.";
+    }
+
+    if (Object.keys(newErrors).length === 0) {
+      // ✅ Store role for later use
+      localStorage.setItem("userRole", formData.role);
+
+      // ✅ Navigate based on role
+      if (formData.role === "seller") {
+        navigate("/seller");
+      } else {
+        navigate("/buyer");
+      }
+    } else {
+      setErrors(newErrors);
+    }
   };
 
   return (
     <div style={styles.body}>
       <div style={styles.container}>
         <img src={logo} alt="Logo" style={styles.logoImage} />
-        <div style={styles.formHeader}>Welcome Back!</div>
-        <div style={styles.formDescription}>Sign in to your account.</div>
+        <div style={styles.formHeader}>Login</div>
+        <div style={styles.formDescription}>Access your account.</div>
         <form onSubmit={handleSubmit}>
           <div style={styles.formGroup}>
             <label style={styles.label}>Email</label>
             <input
               type="email"
-              required
-              placeholder="Enter email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
               style={styles.input}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
             />
+            {errors.email && <div style={styles.errorText}>{errors.email}</div>}
           </div>
-          <div style={styles.formGroup}>
+
+          <div style={{ ...styles.formGroup, ...styles.passwordWrapper }}>
             <label style={styles.label}>Password</label>
-            <div style={styles.passwordWrapper}>
-              <input
-                type={passwordVisible ? 'text' : 'password'}
-                required
-                placeholder="Enter password"
-                style={styles.input}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <span style={styles.toggleText} onClick={togglePasswordVisibility}>
-                {passwordVisible ? 'Hide' : 'Show'}
-              </span>
-            </div>
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              style={styles.input}
+            />
+            <span
+              style={styles.passwordToggle}
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? "Hide" : "Show"}
+            </span>
+            {errors.password && (
+              <div style={styles.errorText}>{errors.password}</div>
+            )}
           </div>
+
           <div style={styles.formGroup}>
-            <label style={styles.label}>Select Role</label>
+            <label style={styles.label}>Role</label>
             <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
               style={styles.input}
             >
               <option value="buyer">Buyer</option>
               <option value="seller">Seller</option>
             </select>
           </div>
-          <div style={styles.formActions}>
-            <span style={styles.link} onClick={handleForgotPassword}>
-              Forgot Password?
+
+          <div style={styles.formGroup}>
+            <label>
+              <input
+                type="checkbox"
+                name="rememberMe"
+                checked={formData.rememberMe}
+                onChange={handleChange}
+              />{" "}
+              Remember me
+            </label>
+            <span style={{ float: "right" }}>
+              <a href="/forgot-password" style={styles.link}>
+                Forgot Password?
+              </a>
             </span>
+          </div>
+
+          <div style={styles.formActions}>
             <button type="submit" style={styles.button}>
-              Sign In
+              Login
             </button>
           </div>
         </form>
         <div style={styles.footerText}>
-          Don't have an account?{" "}
+          Don’t have an account?{" "}
           <a href="/signup" style={styles.link}>
             Sign Up
           </a>

@@ -5,16 +5,16 @@ import HomePage from './components/HomePage';
 import Services from './components/Services';
 import AboutUs from './components/AboutUs';
 import Help from './components/Help';
-import Footer from './components/Footer';
+import Contact from './components/Contact';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
 import SellerHomePage from './components/SellerHomePage';
-import Contact from './components/Contact';
 import BuyerHomePage from './components/BuyerHomePage';
 import AddProduct from './components/AddProduct';
 import SellerProductPage from './components/SellerProductPage';
 import BuyerProductPage from './components/BuyerProductPage';
-
+import ProductDetails from './components/ProductDetails'; // ✅ Added
+import Footer from './components/Footer'; // ✅ Add this only if Footer exists
 import './i18n.js';
 import './App.css';
 
@@ -44,17 +44,25 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
+          {/* Static Pages */}
           <Route path="/" element={<HomePage />} />
           <Route path="/services" element={<Services />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/help" element={<Help />} />
+          <Route path="/contact" element={<Contact />} />
+
+          {/* Auth */}
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/contact" element={<Contact />} />
+
+          {/* Role-based HomePages */}
+          <Route path="/BuyerHomePage" element={<BuyerHomePage />} />
+          <Route path="/SellerHomePage" element={<SellerHomePage />} />
           <Route path="/buyer" element={<BuyerHomePage />} />
           <Route path="/seller" element={<SellerHomePage />} />
-          <Route path="/seller/add-product" element={<AddProduct onAddProduct={addProduct} />} />
 
+          {/* Seller Routes */}
+          <Route path="/seller/add-product" element={<AddProduct onAddProduct={addProduct} />} />
           <Route
             path="/seller/products"
             element={
@@ -66,11 +74,17 @@ function App() {
             }
           />
 
+          {/* Buyer Route */}
           <Route
             path="/buyer/products"
             element={<BuyerProductPage products={products} onAddToCart={handleAddToCart} />}
           />
+
+          {/* ✅ Product Details Route */}
+          <Route path="/product/:id" element={<ProductDetails />} />
         </Routes>
+
+        {/* Optional footer */}
         <Footer />
       </div>
     </Router>

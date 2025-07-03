@@ -1,19 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.jpg";
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const [captcha, setCaptcha] = useState({ question: "", answer: "" });
   const [formData, setFormData] = useState({
     fullName: "",
+    username: "",
     email: "",
     phone: "",
     password: "",
     confirmPassword: "",
     acceptTerms: false,
+    captchaAnswer: "",
   });
+
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState("");
+
+  // Generate captcha
+  useEffect(() => {
+    const a = Math.floor(Math.random() * 10) + 1;
+    const b = Math.floor(Math.random() * 10) + 1;
+    setCaptcha({ question: `${a} + ${b}`, answer: (a + b).toString() });
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -21,16 +33,23 @@ const SignUp = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+
+    if (name === "password") checkPasswordStrength(value);
+  };
+
+  const checkPasswordStrength = (password) => {
+    if (password.length < 6) setPasswordStrength("Weak");
+    else if (password.match(/^(?=.*[A-Z])(?=.*[0-9])/)) setPasswordStrength("Strong");
+    else setPasswordStrength("Medium");
   };
 
   const validateForm = () => {
     const newErrors = {};
     if (!formData.fullName) newErrors.fullName = "Full name is required.";
+    if (!formData.username) newErrors.username = "Username is required.";
     if (!formData.email) {
       newErrors.email = "Email is required.";
-    } else if (
-      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email)
-    ) {
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email)) {
       newErrors.email = "Invalid email address.";
     }
     if (!formData.phone) {
@@ -41,10 +60,16 @@ const SignUp = () => {
     if (!formData.password) newErrors.password = "Password is required.";
     else if (formData.password.length < 6)
       newErrors.password = "Password must be at least 6 characters.";
+
     if (formData.password !== formData.confirmPassword)
       newErrors.confirmPassword = "Passwords do not match.";
+
     if (!formData.acceptTerms)
       newErrors.acceptTerms = "Please accept the terms and conditions.";
+
+    if (formData.captchaAnswer !== captcha.answer)
+      newErrors.captchaAnswer = "Captcha answer is incorrect.";
+
     return newErrors;
   };
 
@@ -53,7 +78,7 @@ const SignUp = () => {
     const formErrors = validateForm();
     if (Object.keys(formErrors).length === 0) {
       console.log("Form submitted:", formData);
-      navigate("/EcommercePage");
+      navigate("/Login");
     } else {
       setErrors(formErrors);
     }
@@ -80,7 +105,6 @@ const SignUp = () => {
       backgroundColor: "rgba(255,255,255,0.95)",
       borderRadius: "12px",
       boxShadow: "0 8px 20px rgba(0,0,0,0.2)",
-      boxSizing: "border-box",
     },
     logoImage: {
       width: "120px",
@@ -159,6 +183,16 @@ const SignUp = () => {
     passwordWrapper: {
       position: "relative",
     },
+    strengthText: {
+      fontSize: "12px",
+      marginTop: "5px",
+      color:
+        passwordStrength === "Strong"
+          ? "green"
+          : passwordStrength === "Medium"
+          ? "orange"
+          : "red",
+    },
   };
 
   return (
@@ -177,9 +211,18 @@ const SignUp = () => {
               onChange={handleInputChange}
               style={styles.input}
             />
-            {errors.fullName && (
-              <div style={styles.errorText}>{errors.fullName}</div>
-            )}
+            {errors.fullName && <div style={styles.errorText}>{errors.fullName}</div>}
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Username</label>
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleInputChange}
+              style={styles.input}
+            />
+            {errors.username && <div style={styles.errorText}>{errors.username}</div>}
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>Email</label>
@@ -190,9 +233,7 @@ const SignUp = () => {
               onChange={handleInputChange}
               style={styles.input}
             />
-            {errors.email && (
-              <div style={styles.errorText}>{errors.email}</div>
-            )}
+            {errors.email && <div style={styles.errorText}>{errors.email}</div>}
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>Phone Number</label>
@@ -203,9 +244,7 @@ const SignUp = () => {
               onChange={handleInputChange}
               style={styles.input}
             />
-            {errors.phone && (
-              <div style={styles.errorText}>{errors.phone}</div>
-            )}
+            {errors.phone && <div style={styles.errorText}>{errors.phone}</div>}
           </div>
           <div style={{ ...styles.formGroup, ...styles.passwordWrapper }}>
             <label style={styles.label}>Password</label>
@@ -222,9 +261,10 @@ const SignUp = () => {
             >
               {showPassword ? "Hide" : "Show"}
             </span>
-            {errors.password && (
-              <div style={styles.errorText}>{errors.password}</div>
-            )}
+            <div style={styles.strengthText}>
+              Strength: {passwordStrength || "N/A"}
+            </div>
+            {errors.password && <div style={styles.errorText}>{errors.password}</div>}
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>Confirm Password</label>
@@ -248,17 +288,26 @@ const SignUp = () => {
                 onChange={handleInputChange}
               />{" "}
               I accept the{" "}
-              <a
-                href="/terms"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={styles.link}
-              >
+              <a href="/terms" target="_blank" rel="noopener noreferrer" style={styles.link}>
                 terms and conditions
               </a>
             </label>
             {errors.acceptTerms && (
               <div style={styles.errorText}>{errors.acceptTerms}</div>
+            )}
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Captcha: {captcha.question}</label>
+            <input
+              type="text"
+              name="captchaAnswer"
+              value={formData.captchaAnswer}
+              onChange={handleInputChange}
+              style={styles.input}
+              placeholder="Answer"
+            />
+            {errors.captchaAnswer && (
+              <div style={styles.errorText}>{errors.captchaAnswer}</div>
             )}
           </div>
           <div style={styles.formActions}>

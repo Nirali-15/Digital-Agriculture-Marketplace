@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-// 🖼️ Import your banner images
+import { useNavigate, Link } from 'react-router-dom';
 import banner1 from '../assets/rice.jpg';
 import banner2 from '../assets/vegetables.jpeg';
 import banner3 from '../assets/diary.jpeg';
 import banner4 from '../assets/grains.jpeg';
+import logo from '../assets/logo.jpg';
 
 const convertToBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -23,33 +22,35 @@ const SellerProductPage = ({ products: initialProducts, setProducts }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
   const currentSellerId = localStorage.getItem('sellerId');
-
   const banners = [banner1, banner2, banner3, banner4];
 
   useEffect(() => {
+    const prepareInitialProducts = async (rawProducts) => {
+      const processed = await Promise.all(
+        rawProducts.map(async (prod) => {
+          const images = await Promise.all(
+            (prod.images || []).map(async (img) => {
+              if (typeof img === 'object' && img instanceof File) {
+                return await convertToBase64(img);
+              }
+              return img;
+            })
+          );
+          return { ...prod, images };
+        })
+      );
+      setLocalProducts(processed);
+      setProducts(processed);
+      localStorage.setItem('products', JSON.stringify(processed));
+    };
+
     const saved = localStorage.getItem('products');
     if (saved) {
       setLocalProducts(JSON.parse(saved));
     } else {
       prepareInitialProducts(initialProducts);
     }
-  }, [initialProducts]);
-
-  const prepareInitialProducts = async (rawProducts) => {
-    const processed = await Promise.all(
-      rawProducts.map(async (prod) => {
-        const images = await Promise.all(
-          (prod.images || []).map(async (img) => {
-            if (img instanceof File) return await convertToBase64(img);
-            return img;
-          })
-        );
-        return { ...prod, images };
-      })
-    );
-    setLocalProducts(processed);
-    localStorage.setItem('products', JSON.stringify(processed));
-  };
+  }, [initialProducts, setProducts]);
 
   const updateLocal = (list) => {
     setLocalProducts(list);
@@ -58,10 +59,14 @@ const SellerProductPage = ({ products: initialProducts, setProducts }) => {
   };
 
   const handleDeleteProduct = (index) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
+    if (window.confirm('Are you sure you want to delete this product?')) {
       const updated = products.filter((_, i) => i !== index);
       updateLocal(updated);
     }
+  };
+
+  const handleEditProduct = (product) => {
+    navigate('/seller/add-product', { state: { product } });
   };
 
   const filteredProducts = products.filter(
@@ -73,79 +78,145 @@ const SellerProductPage = ({ products: initialProducts, setProducts }) => {
   );
 
   return (
-    <div style={styles.container}>
-      {/* Banner Grid */}
-      <div style={styles.bannerContainer}>
-        <h2 style={styles.bannerHeading}>Your Product Highlights</h2>
-        <div style={styles.bannerGrid}>
-          {banners.map((img, index) => (
-            <img
-              key={index}
-              src={img}
-              alt={`Banner ${index + 1}`}
-              style={styles.bannerImage}
-            />
+    <>
+      {/* Navbar */}
+      <nav style={styles.navbar}>
+        <div style={styles.logoContainer}>
+          <img src={logo} alt="FarmFlow" style={styles.logo} />
+          <span style={styles.logoText}>FarmFlow</span>
+        </div>
+        <div style={styles.navLinks}>
+          {[
+            { to: '/SellerHomePage', label: 'Home' },
+            { to: '/seller/add-product', label: 'Add Product' },
+            { to: '/seller/products', label: 'My Products' },
+            { to: '/notifications', label: 'Notifications' },
+            { to: '/buyer-requests', label: 'Buyer Requests' },
+            { to: '/account', label: 'Account' },
+            { to: '/analytics', label: 'Analytics' }
+          ].map((item) => (
+            <Link key={item.to} to={item.to} style={styles.navItem}>
+              {item.label}
+            </Link>
           ))}
         </div>
-      </div>
+      </nav>
 
-      {/* Search Bar */}
-      <div style={styles.searchContainer}>
-        <input
-          type="text"
-          placeholder="Search products by name or description..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={styles.searchInput}
-        />
-      </div>
-
-      {/* Category Filters */}
-      <div style={styles.categoryContainer}>
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setSelectedCategory(cat)}
-            style={{
-              ...styles.categoryButton,
-              backgroundColor: selectedCategory === cat ? '#2e7d32' : '#fff',
-              color: selectedCategory === cat ? '#fff' : '#2e7d32',
-            }}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      {/* Product Cards */}
-      <h2 style={styles.heading}>My Products</h2>
-      {filteredProducts.length === 0 ? (
-        <p style={{ textAlign: 'center' }}>No products in this category.</p>
-      ) : (
-        <div style={styles.grid}>
-          {filteredProducts.map((prod, index) => {
-            const imageSrc = prod.images?.[0] || '';
-            return (
-              <div key={index} style={styles.card}>
-                <img src={imageSrc} alt={prod.name} style={styles.image} onClick={() => navigate(`/product/${prod.id}`)} />
-                <h3 style={styles.name}>{prod.name}</h3>
-                <p style={styles.price}>₹{prod.price}</p>
-                <p style={styles.desc}>{prod.description}</p>
-                <p style={styles.info}><b>Qty:</b> {prod.quantity} {prod.unit}</p>
-                <p style={styles.info}><b>Location:</b> {prod.location}</p>
-                <p style={styles.info}><b>Organic:</b> {prod.organic ? 'Yes' : 'No'}</p>
-                <button style={styles.cartBtn}>Add to Cart</button>
-                <button style={styles.deleteBtn} onClick={() => handleDeleteProduct(index)}>Delete</button>
-              </div>
-            );
-          })}
+      {/* Content */}
+      <div style={styles.container}>
+        <div style={styles.bannerContainer}>
+          <h2 style={styles.bannerHeading}>Your Product Highlights</h2>
+          <div style={styles.bannerGrid}>
+            {banners.map((img, index) => (
+              <img key={index} src={img} alt={`Banner ${index + 1}`} style={styles.bannerImage} />
+            ))}
+          </div>
         </div>
-      )}
-    </div>
+
+        <div style={styles.searchContainer}>
+          <input
+            type="text"
+            placeholder="Search products by name or description..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={styles.searchInput}
+          />
+        </div>
+
+        <div style={styles.categoryContainer}>
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              style={{
+                ...styles.categoryButton,
+                backgroundColor: selectedCategory === cat ? '#2e7d32' : '#fff',
+                color: selectedCategory === cat ? '#fff' : '#2e7d32',
+              }}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        <h2 style={styles.heading}>My Products</h2>
+        {filteredProducts.length === 0 ? (
+          <p style={{ textAlign: 'center' }}>No products in this category.</p>
+        ) : (
+          <div style={styles.grid}>
+            {filteredProducts.map((prod, index) => {
+              const imageSrc = prod.images?.[0] || '';
+              return (
+                <div key={index} style={styles.card}>
+                  <img
+                    src={imageSrc}
+                    alt={prod.name}
+                    style={styles.image}
+                    onClick={() => navigate(`/product/${prod.id}`)}
+                  />
+                  <h3 style={styles.name}>{prod.name}</h3>
+                  <p style={styles.price}>₹{prod.price}</p>
+                  <p style={styles.desc}>{prod.description}</p>
+                  <p style={styles.info}><b>Qty:</b> {prod.quantity} {prod.unit}</p>
+                  <p style={styles.info}><b>Location:</b> {prod.location}</p>
+                  <p style={styles.info}><b>Organic:</b> {prod.organic ? 'Yes' : 'No'}</p>
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <button style={styles.deleteBtn} onClick={() => handleDeleteProduct(index)}>Delete</button>
+                    <button style={styles.editBtn} onClick={() => handleEditProduct(prod)}>Edit</button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
+// Styles
 const styles = {
+  navbar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '1rem 2rem',
+    backgroundColor: '#2e7d32',
+    flexWrap: 'wrap',
+    position: 'sticky',
+    top: 0,
+    zIndex: 1000,
+  },
+  logoContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+  },
+  logo: {
+    width: '40px',
+    height: '40px',
+    borderRadius: '50%',
+  },
+  logoText: {
+    fontSize: '1.5rem',
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  navLinks: {
+    display: 'flex',
+    gap: '10px',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
+  navItem: {
+    backgroundColor: '#ffffff',
+    color: '#2e7d32',
+    fontWeight: 'bold',
+    padding: '8px 14px',
+    borderRadius: '20px',
+    textDecoration: 'none',
+    transition: '0.3s ease-in-out',
+  },
   container: {
     padding: '2rem',
     backgroundColor: '#f9f9f9',
@@ -245,20 +316,17 @@ const styles = {
     fontSize: '0.9rem',
     color: '#777',
   },
-  cartBtn: {
-    marginTop: '0.5rem',
+  deleteBtn: {
     padding: '8px 12px',
-    backgroundColor: '#2e7d32',
+    backgroundColor: 'crimson',
     color: '#fff',
     border: 'none',
     borderRadius: '5px',
     cursor: 'pointer',
-    marginRight: '0.5rem',
   },
-  deleteBtn: {
-    marginTop: '0.5rem',
+  editBtn: {
     padding: '8px 12px',
-    backgroundColor: 'crimson',
+    backgroundColor: '#0275d8',
     color: '#fff',
     border: 'none',
     borderRadius: '5px',
