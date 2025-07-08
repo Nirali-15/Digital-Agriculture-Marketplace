@@ -140,7 +140,7 @@ const Login = () => {
     }
 
     if (Object.keys(newErrors).length === 0) {
-      // ✅ Store role for later use
+      // ✅ Store role
       localStorage.setItem("userRole", formData.role);
 
       // ✅ Navigate based on role
