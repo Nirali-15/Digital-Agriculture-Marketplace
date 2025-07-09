@@ -1,10 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useCart } from './CartContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const CartPage = () => {
-  const { cartItems = [], removeFromCart } = useCart();
+  const { cartItems = [], removeFromCart, updateQuantity } = useCart();
   const navigate = useNavigate();
+  const [promoCode, setPromoCode] = useState('');
+
+  const handleQuantityChange = (itemId, type) => {
+    const item = cartItems.find(i => i.id === itemId);
+    if (!item) return;
+    const currentQty = item.quantity || 1;
+    const newQty = type === 'inc' ? currentQty + 1 : currentQty - 1;
+    if (newQty >= 1) {
+      updateQuantity(itemId, newQty);
+    }
+  };
 
   const total = cartItems.reduce((sum, item) => {
     const qty = item.quantity || 1;
@@ -13,7 +24,7 @@ const CartPage = () => {
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.heading}>Your Shopping Cart</h2>
+      <h2 style={styles.heading}>Your Shopping Cart ({cartItems.length} items)</h2>
 
       {cartItems.length === 0 ? (
         <p style={styles.empty}>Your cart is empty.</p>
@@ -31,9 +42,34 @@ const CartPage = () => {
                 <div style={styles.details}>
                   <h3 style={styles.name}>{item.name}</h3>
                   <p style={styles.desc}>{item.description}</p>
-                  <p style={styles.price}>₹{item.price}</p>
+                  <p style={styles.price}>₹{item.price} per unit</p>
                   <div style={styles.qtyRow}>
-                    <span>Qty: {item.quantity || 1}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <button
+                        onClick={() => handleQuantityChange(item.id, 'dec')}
+                        disabled={(item.quantity || 1) === 1}
+                        style={{
+                          padding: '4px 10px',
+                          fontSize: '1rem',
+                          cursor: 'pointer',
+                          backgroundColor: '#eee',
+                          border: '1px solid #ccc',
+                          borderRadius: '6px'
+                        }}
+                      >-</button>
+                      <span>{item.quantity || 1}</span>
+                      <button
+                        onClick={() => handleQuantityChange(item.id, 'inc')}
+                        style={{
+                          padding: '4px 10px',
+                          fontSize: '1rem',
+                          cursor: 'pointer',
+                          backgroundColor: '#eee',
+                          border: '1px solid #ccc',
+                          borderRadius: '6px'
+                        }}
+                      >+</button>
+                    </div>
                     <button
                       onClick={() => removeFromCart(item.id)}
                       style={styles.removeBtn}
@@ -41,6 +77,26 @@ const CartPage = () => {
                       Remove
                     </button>
                   </div>
+                  <p style={{ marginTop: '0.3rem', fontSize: '0.9rem', color: '#444' }}>
+                    Subtotal: ₹{(item.price * (item.quantity || 1)).toFixed(2)}
+                  </p>
+                  <p style={{ fontSize: '0.85rem', color: '#888' }}>
+                    Delivery in 2–3 days
+                  </p>
+                  <button
+                    style={{
+                      marginTop: '0.5rem',
+                      padding: '5px 12px',
+                      fontSize: '0.85rem',
+                      backgroundColor: '#f5f5f5',
+                      border: '1px solid #ccc',
+                      borderRadius: '6px',
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => alert("Saved for later")}
+                  >
+                    Save for Later
+                  </button>
                 </div>
               </div>
             ))}
@@ -58,17 +114,51 @@ const CartPage = () => {
                 <span>Shipping</span>
                 <span>Free</span>
               </div>
+              <div style={styles.row}>
+                <span>GST</span>
+                <span>Included</span>
+              </div>
               <hr />
               <div style={{ ...styles.row, fontWeight: 'bold', fontSize: '1.1rem' }}>
                 <span>Total</span>
                 <span>₹{total.toFixed(2)}</span>
               </div>
+
+              {/* Promo code input */}
+              <div style={{ marginTop: '1rem' }}>
+                <input
+                  type="text"
+                  placeholder="Apply Promo Code"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value)}
+                  style={{
+                    padding: '8px',
+                    borderRadius: '6px',
+                    border: '1px solid #ccc',
+                    width: '100%',
+                    marginBottom: '10px'
+                  }}
+                />
+              </div>
+
               <button
                 style={styles.checkoutBtn}
                 onClick={() => navigate('/checkout')}
               >
                 Proceed to Buy
               </button>
+
+              {/* Continue shopping */}
+              <Link to="/products" style={{ textAlign: 'center', marginTop: '10px', display: 'block', color: '#2e7d32' }}>
+                Continue Shopping
+              </Link>
+
+              {/* Payment badges */}
+              <div style={{ marginTop: '1rem', fontSize: '0.85rem', color: '#555' }}>
+                <p>🔒 Secure Checkout</p>
+                <p>💳 UPI / Netbanking / Cash on Delivery</p>
+                <p>📦 Return Policy: </p>
+              </div>
             </div>
           </div>
         </div>
