@@ -19,6 +19,7 @@ const Account = () => {
   const [role, setRole] = useState('');
   const [profileImage, setProfileImage] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const storedEmail = localStorage.getItem('email') || '';
@@ -57,6 +58,7 @@ const Account = () => {
     reader.onloadend = () => {
       setProfileImage(reader.result);
       localStorage.setItem('profileImage', reader.result);
+      setIsEditing(false); // Hide upload input after change
     };
     reader.readAsDataURL(file);
   };
@@ -104,8 +106,16 @@ const Account = () => {
             alt="Profile"
             style={styles.profileImage}
           />
-          <label style={styles.uploadLabel}>Change Profile Image</label>
-          <input type="file" accept="image/*" onChange={handleImageUpload} />
+
+          {isEditing ? (
+            <>
+              <label style={styles.uploadLabel}>Change Profile Image</label>
+              <input type="file" accept="image/*" onChange={handleImageUpload} />
+            </>
+          ) : (
+            <button onClick={() => setIsEditing(true)} style={styles.editBtn}>Edit Profile</button>
+          )}
+
           <h2 style={styles.name}>{userData.fullName || 'Your Name'}</h2>
           <p style={styles.role}><strong>Role:</strong> {role?.toUpperCase()}</p>
           {lastUpdated && <p style={styles.updated}>Last updated: {lastUpdated}</p>}
@@ -227,6 +237,16 @@ const styles = {
     borderRadius: '6px',
     fontWeight: 'bold',
     cursor: 'pointer',
+  },
+  editBtn: {
+    marginTop: '1rem',
+    padding: '8px 20px',
+    backgroundColor: '#0277bd',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    fontWeight: 'bold',
   },
   rightPane: {
     width: '70%',

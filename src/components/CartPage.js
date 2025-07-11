@@ -42,7 +42,7 @@ const CartPage = () => {
                 <div style={styles.details}>
                   <h3 style={styles.name}>{item.name}</h3>
                   <p style={styles.desc}>{item.description}</p>
-                  <p style={styles.price}>₹{item.price} per unit</p>
+                  <p style={styles.price}>₹{item.price} per Kg</p>
                   <div style={styles.qtyRow}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                       <button
