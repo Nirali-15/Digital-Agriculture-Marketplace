@@ -6,7 +6,7 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-import vegies from '../assets/vegies.jpg';
+//import vegies from '../assets/vegies.jpg';
 import farm1 from "../assets/farm1.jpg";
 import farm2 from "../assets/farm2.jpg";
 import farm3 from "../assets/farm3.jpg";

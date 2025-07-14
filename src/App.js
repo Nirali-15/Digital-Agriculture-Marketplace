@@ -23,7 +23,7 @@ import CartPage from './components/CartPage'; // ✅ Cart page added
 import Footer from './components/Footer';
 import CheckoutPage from './components/CheckoutPage';
 import { CartProvider } from './components/CartContext'; // ✅ Entire App wrapped
-
+import Newsletter from './components/Newsletter.js';
 import './i18n.js';
 import './App.css';
 
@@ -56,7 +56,7 @@ function App() {
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/help" element={<Help />} />
             <Route path="/contact" element={<Contact />} />
-
+            <Route path="/newsletter" element={<Newsletter />} />
             {/* Auth */}
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
