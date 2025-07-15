@@ -24,6 +24,7 @@ import Footer from './components/Footer';
 import CheckoutPage from './components/CheckoutPage';
 import { CartProvider } from './components/CartContext'; // ✅ Entire App wrapped
 import Newsletter from './components/Newsletter.js';
+import RequestSellerPage from './components/RequestSellerPage.js';
 import './i18n.js';
 import './App.css';
 
@@ -66,6 +67,8 @@ function App() {
             <Route path="/seller" element={<SellerHomePage />} />
             <Route path="/BuyerHomePage" element={<BuyerHomePage />} />
             <Route path="/SellerHomePage" element={<SellerHomePage />} />
+            <Route path="/request-seller" element={<RequestSellerPage />} />
+
 
             {/* Seller Routes */}
             <Route path="/seller/add-product" element={<AddProduct onAddProduct={addProduct} />} />

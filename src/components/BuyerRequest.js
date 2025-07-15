@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import logo from '../assets/logo.jpg';
 
 const BuyerRequest = () => {
   const [requests, setRequests] = useState([
@@ -47,6 +49,46 @@ const BuyerRequest = () => {
   });
 
   const styles = {
+    navbar: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '1rem 2rem',
+      backgroundColor: '#2e7d32',
+      color: 'white',
+      position: 'sticky',
+      top: 0,
+      zIndex: 1000,
+      flexWrap: 'wrap'
+    },
+    logoContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '10px'
+    },
+    logo: {
+      height: '40px',
+      borderRadius: '50%'
+    },
+    logoText: {
+      fontSize: '1.5rem',
+      fontWeight: 'bold',
+      color: 'white',
+      textDecoration: 'none'
+    },
+    navLinks: {
+      display: 'flex',
+      gap: '1rem',
+      flexWrap: 'wrap'
+    },
+    navItem: {
+      backgroundColor: '#fff',
+      color: '#2e7d32',
+      padding: '8px 14px',
+      borderRadius: '6px',
+      textDecoration: 'none',
+      fontWeight: 'bold'
+    },
     container: {
       padding: '2rem',
       backgroundColor: '#f9f9fb',
@@ -150,94 +192,114 @@ const BuyerRequest = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <h2 style={styles.title}>Buyer Requests</h2>
+    <>
+      {/* Navbar */}
+      <nav style={styles.navbar}>
+        <div style={styles.logoContainer}>
+          <img src={logo} alt="Logo" style={styles.logo} />
+          <span style={styles.logoText}>FarmFlow</span>
+        </div>
+        <div style={styles.navLinks}>
+          <Link to="/seller" style={styles.navItem}>Home</Link>
+          <Link to="/seller/add-product" style={styles.navItem}>Add Product</Link>
+          <Link to="/seller/products" style={styles.navItem}>My Products</Link>
+          <Link to="/notifications" style={styles.navItem}>Notifications</Link>
+          <Link to="/buyer-requests" style={styles.navItem}>Buyer Requests</Link>
+          <Link to="/analytics" style={styles.navItem}>Analytics</Link>
+          <Link to="/account" style={styles.navItem}>Account</Link>
+        </div>
+      </nav>
 
-      <div style={styles.controls}>
-        <input
-          type="text"
-          placeholder="Search by buyer or product..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={styles.searchInput}
-        />
-        <select
-          style={styles.filterSelect}
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-        >
-          <option value="All">All</option>
-          <option value="Pending">Pending</option>
-          <option value="Accepted">Accepted</option>
-          <option value="Rejected">Rejected</option>
-        </select>
-      </div>
+      {/* Content */}
+      <div style={styles.container}>
+        <h2 style={styles.title}>Buyer Requests</h2>
 
-      <div style={styles.tableWrapper}>
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th style={styles.th}>Buyer Name</th>
-              <th style={styles.th}>Product</th>
-              <th style={styles.th}>Quantity</th>
-              <th style={styles.th}>Date</th>
-              <th style={styles.th}>Status</th>
-              <th style={styles.th}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredRequests.length > 0 ? (
-              filteredRequests.map((req) => (
-                <tr key={req.id}>
-                  <td style={styles.td}>{req.buyerName}</td>
-                  <td style={styles.td}>{req.product}</td>
-                  <td style={styles.td}>{req.quantity}</td>
-                  <td style={styles.td}>{req.date}</td>
-                  <td style={styles.td}>
-                    <span
-                      style={{
-                        ...styles.statusBadge,
-                        ...styles[req.status.toLowerCase()],
-                      }}
-                    >
-                      {req.status}
-                    </span>
-                  </td>
-                  <td style={styles.td}>
-                    {req.status === 'Pending' ? (
-                      <>
-                        <button
-                          style={{ ...styles.actionBtn, ...styles.accept }}
-                          onClick={() => handleAction(req.id, 'Accepted')}
-                        >
-                          Accept
+        <div style={styles.controls}>
+          <input
+            type="text"
+            placeholder="Search by buyer or product..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={styles.searchInput}
+          />
+          <select
+            style={styles.filterSelect}
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          >
+            <option value="All">All</option>
+            <option value="Pending">Pending</option>
+            <option value="Accepted">Accepted</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+        </div>
+
+        <div style={styles.tableWrapper}>
+          <table style={styles.table}>
+            <thead>
+              <tr>
+                <th style={styles.th}>Buyer Name</th>
+                <th style={styles.th}>Product</th>
+                <th style={styles.th}>Quantity</th>
+                <th style={styles.th}>Date</th>
+                <th style={styles.th}>Status</th>
+                <th style={styles.th}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredRequests.length > 0 ? (
+                filteredRequests.map((req) => (
+                  <tr key={req.id}>
+                    <td style={styles.td}>{req.buyerName}</td>
+                    <td style={styles.td}>{req.product}</td>
+                    <td style={styles.td}>{req.quantity}</td>
+                    <td style={styles.td}>{req.date}</td>
+                    <td style={styles.td}>
+                      <span
+                        style={{
+                          ...styles.statusBadge,
+                          ...styles[req.status.toLowerCase()],
+                        }}
+                      >
+                        {req.status}
+                      </span>
+                    </td>
+                    <td style={styles.td}>
+                      {req.status === 'Pending' ? (
+                        <>
+                          <button
+                            style={{ ...styles.actionBtn, ...styles.accept }}
+                            onClick={() => handleAction(req.id, 'Accepted')}
+                          >
+                            Accept
+                          </button>
+                          <button
+                            style={{ ...styles.actionBtn, ...styles.reject }}
+                            onClick={() => handleAction(req.id, 'Rejected')}
+                          >
+                            Reject
+                          </button>
+                        </>
+                      ) : (
+                        <button style={{ ...styles.actionBtn, ...styles.view }}>
+                          View
                         </button>
-                        <button
-                          style={{ ...styles.actionBtn, ...styles.reject }}
-                          onClick={() => handleAction(req.id, 'Rejected')}
-                        >
-                          Reject
-                        </button>
-                      </>
-                    ) : (
-                      <button style={{ ...styles.actionBtn, ...styles.view }}>
-                        View
-                      </button>
-                    )}
+                      )}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td style={styles.noRecords} colSpan="6">
+                    No matching requests found.
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td style={styles.noRecords} colSpan="6">
-                  No matching requests found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

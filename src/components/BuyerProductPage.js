@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { FaShoppingCart } from 'react-icons/fa';
-import { useCart } from './CartContext'; // Adjust path if needed
+import { useCart } from './CartContext';
 import banner1 from '../assets/rice.jpg';
 import banner2 from '../assets/vegetables.jpeg';
 import banner3 from '../assets/diary.jpeg';
@@ -59,6 +59,7 @@ const BuyerProductPage = ({ products }) => {
             <FaShoppingCart style={{ marginRight: '6px' }} />
             Cart
           </Link>
+          <Link to="/request-seller" style={styles.navItem}>Request Seller</Link>
           <Link to="/account" style={styles.navItem}>Account</Link>
         </div>
       </nav>
@@ -93,7 +94,7 @@ const BuyerProductPage = ({ products }) => {
         <div style={styles.filterRow}>
           <label>
             <input type="checkbox" checked={onlyOrganic} onChange={() => setOnlyOrganic(!onlyOrganic)} />
-            Organic
+            {' '}Organic
           </label>
 
           <select onChange={(e) => setSortBy(e.target.value)} style={styles.select}>
@@ -168,6 +169,7 @@ const styles = {
     alignItems: 'center',
     padding: '1rem 2rem',
     backgroundColor: '#2e7d32',
+    flexWrap: 'wrap',
   },
   logoContainer: {
     display: 'flex',
