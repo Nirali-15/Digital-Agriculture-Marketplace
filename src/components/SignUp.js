@@ -296,7 +296,7 @@ const SignUp = () => {
               <div style={styles.errorText}>{errors.acceptTerms}</div>
             )}
           </div>
-          <div style={styles.formGroup}>
+          {/* <div style={styles.formGroup}>
             <label style={styles.label}>Captcha: {captcha.question}</label>
             <input
               type="text"
@@ -309,7 +309,7 @@ const SignUp = () => {
             {errors.captchaAnswer && (
               <div style={styles.errorText}>{errors.captchaAnswer}</div>
             )}
-          </div>
+          </div> */}
           <div style={styles.formActions}>
             <button type="submit" style={styles.button}>
               Sign Up

@@ -19,23 +19,33 @@ import SelNotification from './components/SelNotification';
 import BuyerRequest from './components/BuyerRequest';
 import Account from './components/Account';
 import BuyerOrdersPage from './components/BuyerOrdersPage';
-import CartPage from './components/CartPage'; // ✅ Cart page added
+import CartPage from './components/CartPage';
 import Footer from './components/Footer';
 import CheckoutPage from './components/CheckoutPage';
-import { CartProvider } from './components/CartContext'; // ✅ Entire App wrapped
-import Newsletter from './components/Newsletter.js';
-import RequestSellerPage from './components/RequestSellerPage.js';
+import { CartProvider } from './components/CartContext';
+import Newsletter from './components/Newsletter';
+import RequestSellerPage from './components/RequestSellerPage';
+
 import './i18n.js';
 import './App.css';
 
 function App() {
   const [products, setProducts] = useState(() => {
-    const savedProducts = localStorage.getItem('products');
-    return savedProducts ? JSON.parse(savedProducts) : [];
+    try {
+      const saved = localStorage.getItem('products');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      console.error("Invalid JSON in localStorage:", e);
+      return [];
+    }
   });
 
   useEffect(() => {
-    localStorage.setItem('products', JSON.stringify(products));
+    try {
+      localStorage.setItem('products', JSON.stringify(products));
+    } catch (e) {
+      console.error("Error saving to localStorage:", e);
+    }
   }, [products]);
 
   const addProduct = (product) => {
@@ -53,39 +63,36 @@ function App() {
           <Routes>
             {/* Static Pages */}
             <Route path="/" element={<HomePage />} />
+            <Route path="/about" element={<AboutUs />} />
             <Route path="/services" element={<Services />} />
-            <Route path="/about-us" element={<AboutUs />} />
             <Route path="/help" element={<Help />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/newsletter" element={<Newsletter />} />
+
             {/* Auth */}
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
 
-            {/* Role-based Dashboards */}
+            {/* Dashboards */}
             <Route path="/buyer" element={<BuyerHomePage />} />
             <Route path="/seller" element={<SellerHomePage />} />
             <Route path="/BuyerHomePage" element={<BuyerHomePage />} />
             <Route path="/SellerHomePage" element={<SellerHomePage />} />
             <Route path="/request-seller" element={<RequestSellerPage />} />
 
-
-            {/* Seller Routes */}
+            {/* Seller */}
             <Route path="/seller/add-product" element={<AddProduct onAddProduct={addProduct} />} />
-            <Route
-              path="/seller/products"
-              element={
-                <SellerProductPage
-                  products={products}
-                  setProducts={setProducts}
-                  onDeleteProduct={handleDeleteProduct}
-                />
-              }
-            />
+            <Route path="/seller/products" element={
+              <SellerProductPage
+                products={products}
+                setProducts={setProducts}
+                onDeleteProduct={handleDeleteProduct}
+              />
+            } />
             <Route path="/notifications" element={<SelNotification />} />
             <Route path="/buyer-requests" element={<BuyerRequest />} />
 
-            {/* Buyer Routes */}
+            {/* Buyer */}
             <Route path="/buyer/products" element={<BuyerProductPage products={products} />} />
             <Route path="/orders" element={<BuyerOrdersPage />} />
             <Route path="/account" element={<Account />} />
@@ -104,3 +111,4 @@ function App() {
 }
 
 export default App;
+

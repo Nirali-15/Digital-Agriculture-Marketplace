@@ -1,4 +1,5 @@
 import React from 'react';
+import Navbar from '../components/Navbar'; // adjust path if needed
 
 const Services = () => {
   const servicesData = [
@@ -14,7 +15,7 @@ const Services = () => {
     },
     {
       title: 'Product Listing & Management',
-      description: 'Allows farmers to upload and manage products with details like product name, quantity, price, quality certifications, and expected harvest time.',
+      description: 'Upload and manage products with name, quantity, price, certifications, and harvest time.',
       icon: '📦',
     },
     {
@@ -24,81 +25,85 @@ const Services = () => {
     },
     {
       title: 'Feedback & Review System',
-      description: 'Rating and review system for both sellers and buyers to ensure transparency and build trust.',
+      description: 'Ratings and reviews for both sellers and buyers to build trust.',
       icon: '⭐',
     },
     {
       title: 'Customer Support',
-      description: '24/7 support through chatbots, email, or phone for resolving any issues.',
+      description: '24/7 support through chatbots, email, or phone for any issues.',
       icon: '📞',
     },
   ];
 
-  // Inline styles
   const pageStyle = {
-    padding: '40px 20px',
     fontFamily: 'Arial, sans-serif',
-    backgroundColor: '#f5fefe',
-    color: '#213555',
-    textAlign: 'center',
+    backgroundColor: '#f4f7f8',
+    color: '#1f2d3d',
+    minHeight: '100vh',
+    padding: '30px 20px',
   };
 
   const headingStyle = {
+    textAlign: 'center',
     fontSize: '2.5rem',
-    marginBottom: '30px',
+    marginBottom: '10px',
   };
 
   const subHeadingStyle = {
-    fontSize: '1.2rem',
+    textAlign: 'center',
+    fontSize: '1.1rem',
     marginBottom: '40px',
-    color: '#5879a3',
+    color: '#6c7a89',
   };
 
   const cardContainerStyle = {
     display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)', // Ensures three cards per row
+    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
     gap: '30px',
     justifyItems: 'center',
+    maxWidth: '1200px',
+    margin: '0 auto',
   };
 
   const cardStyle = {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff',
     borderRadius: '12px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    padding: '20px',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+    padding: '25px',
     textAlign: 'center',
-    maxWidth: '350px',
-    transition: 'transform 0.3s ease',
+    transition: 'transform 0.3s',
   };
 
   const iconStyle = {
-    fontSize: '3rem',
-    color: '#3e5879',
+    fontSize: '2.5rem',
     marginBottom: '15px',
+    color: '#3e5879',
   };
 
   const titleStyle = {
-    fontSize: '1.5rem',
-    color: '#213555',
+    fontSize: '1.3rem',
     marginBottom: '10px',
+    color: '#213555',
   };
 
   const descriptionStyle = {
-    fontSize: '1rem',
-    color: '#5879a3',
+    fontSize: '0.95rem',
+    color: '#6b7c93',
   };
 
   return (
     <div style={pageStyle}>
+      <Navbar />
       <h1 style={headingStyle}>Our Services</h1>
-      <p style={subHeadingStyle}>
-        Explore our range of services designed to make your experience smooth and efficient.
-      </p>
+      <p style={subHeadingStyle}>Explore the tools and features we offer to enhance your marketplace experience.</p>
       <div style={cardContainerStyle}>
         {servicesData.map((service, index) => (
           <div
             key={index}
-            style={cardStyle}
+            style={{
+              ...cardStyle,
+              transform: 'translateY(0)',
+            }}
             onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateY(-5px)')}
             onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
           >

@@ -17,6 +17,7 @@ const BuyerProductPage = ({ products }) => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy, setSortBy] = useState('');
   const [onlyOrganic, setOnlyOrganic] = useState(false);
+  const [quantities, setQuantities] = useState({});
   const { addToCart } = useCart();
   const banners = [banner1, banner2, banner3, banner4];
 
@@ -38,14 +39,21 @@ const BuyerProductPage = ({ products }) => {
     filterProducts();
   }, [filterProducts]);
 
-  const handleAddToCart = (product) => {
-    addToCart(product);
-    alert(`Added ${product.name} to cart!`);
+  const handleAddToCart = (product, index) => {
+    const quantity = parseFloat(quantities[index] || 1);
+    addToCart({ ...product, quantity });
+    alert(`Added ${quantity} ${product.unit} of ${product.name} to cart!`);
+  };
+
+  const handleQuantityChange = (index, amount) => {
+    setQuantities((prev) => {
+      const newQty = Math.max(0.1, parseFloat((prev[index] || 1) + amount).toFixed(1));
+      return { ...prev, [index]: newQty };
+    });
   };
 
   return (
     <>
-      {/* Navbar */}
       <nav style={styles.navbar}>
         <div style={styles.logoContainer}>
           <img src={logo} alt="FarmFlow" style={styles.logo} />
@@ -55,16 +63,12 @@ const BuyerProductPage = ({ products }) => {
           <Link to="/buyer" style={styles.navItem}>Home</Link>
           <Link to="/buyer/products" style={{ ...styles.navItem, backgroundColor: '#c8e6c9' }}>Shop</Link>
           <Link to="/orders" style={styles.navItem}>Orders</Link>
-          <Link to="/cart" style={styles.navItem}>
-            <FaShoppingCart style={{ marginRight: '6px' }} />
-            Cart
-          </Link>
+          <Link to="/cart" style={styles.navItem}><FaShoppingCart style={{ marginRight: '6px' }} />Cart</Link>
           <Link to="/request-seller" style={styles.navItem}>Request Seller</Link>
           <Link to="/account" style={styles.navItem}>Account</Link>
         </div>
       </nav>
 
-      {/* Category Buttons */}
       <div style={styles.categoryContainer}>
         {categories.map((cat) => (
           <button
@@ -74,14 +78,12 @@ const BuyerProductPage = ({ products }) => {
               ...styles.categoryButton,
               backgroundColor: selectedCategory === cat ? '#2e7d32' : '#fff',
               color: selectedCategory === cat ? '#fff' : '#2e7d32',
-            }}
-          >
+            }}>
             {cat}
           </button>
         ))}
       </div>
 
-      {/* Filters */}
       <div style={styles.filterSection}>
         <input
           type="text"
@@ -93,10 +95,8 @@ const BuyerProductPage = ({ products }) => {
 
         <div style={styles.filterRow}>
           <label>
-            <input type="checkbox" checked={onlyOrganic} onChange={() => setOnlyOrganic(!onlyOrganic)} />
-            {' '}Organic
+            <input type="checkbox" checked={onlyOrganic} onChange={() => setOnlyOrganic(!onlyOrganic)} /> Organic
           </label>
-
           <select onChange={(e) => setSortBy(e.target.value)} style={styles.select}>
             <option value="">Sort By</option>
             <option value="price">Price (Low to High)</option>
@@ -105,14 +105,12 @@ const BuyerProductPage = ({ products }) => {
         </div>
       </div>
 
-      {/* Banners */}
       <div style={styles.bannerGrid}>
         {banners.map((img, index) => (
           <img key={index} src={img} alt={`Banner ${index + 1}`} style={styles.bannerImage} />
         ))}
       </div>
 
-      {/* Product Grid */}
       <h2 style={styles.heading}>Explore Products</h2>
       {filteredProducts.length === 0 ? (
         <p style={{ textAlign: 'center' }}>No products available.</p>
@@ -122,22 +120,38 @@ const BuyerProductPage = ({ products }) => {
             const imageSrc = prod.images?.[0] || '';
             return (
               <div key={index} style={styles.card}>
-                <img
-                  src={imageSrc}
-                  alt={prod.name}
-                  style={styles.image}
-                  onClick={() => setSelectedProduct(prod)}
-                />
+                <img src={imageSrc} alt={prod.name} style={styles.image} />
                 <h3 style={styles.name}>{prod.name}</h3>
-                <p style={styles.price}>₹{prod.price}</p>
-                <button style={styles.cartBtn} onClick={() => handleAddToCart(prod)}>Add to Cart</button>
+                <p style={styles.price}>₹{prod.price} / {prod.unit}</p>
+                <p>
+                  {prod.description.slice(0, 50)}...
+                  <button
+                    onClick={() => setSelectedProduct(prod)}
+                    style={styles.knowMoreBtn}
+                  >
+                    Know More
+                  </button>
+                </p>
+                <div style={styles.quantityRow}>
+                  <button onClick={() => handleQuantityChange(index, -0.1)} style={styles.qtyBtn}>-</button>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={quantities[index] || 1}
+                    onChange={(e) =>
+                      handleQuantityChange(index, parseFloat(e.target.value) - (quantities[index] || 1))
+                    }
+                    style={styles.qtyInput}
+                  />
+                  <button onClick={() => handleQuantityChange(index, 0.1)} style={styles.qtyBtn}>+</button>
+                </div>
+                <button style={styles.cartBtn} onClick={() => handleAddToCart(prod, index)}>Add to Cart</button>
               </div>
             );
           })}
         </div>
       )}
 
-      {/* Modal View */}
       {selectedProduct && (
         <div style={styles.modalOverlay} onClick={() => setSelectedProduct(null)}>
           <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -150,11 +164,25 @@ const BuyerProductPage = ({ products }) => {
             <p><b>Description:</b> {selectedProduct.description}</p>
             <p><b>Price:</b> ₹{selectedProduct.price}</p>
             <p><b>Discounted Price:</b> ₹{(selectedProduct.price * 0.9).toFixed(2)} (10% off)</p>
-            <p><b>Quantity:</b> {selectedProduct.quantity} {selectedProduct.unit}</p>
+            <p><b>Quantity Available:</b> {selectedProduct.quantity} {selectedProduct.unit}</p>
             <p><b>Organic:</b> {selectedProduct.organic ? 'Yes' : 'No'}</p>
             <p><b>Seller Info:</b> Seller ID: {selectedProduct.sellerId}</p>
-            <p><b>Shipping Info:</b> Ships in 3–5 business days</p>
-            <button style={styles.cartBtn} onClick={() => handleAddToCart(selectedProduct)}>Add to Cart</button>
+            <p><b>Shipping:</b> Ships in 3–5 business days</p>
+
+            <div style={styles.quantityRow}>
+              <button onClick={() => handleQuantityChange('modal', -0.1)} style={styles.qtyBtn}>-</button>
+              <input
+                type="number"
+                step="0.1"
+                value={quantities['modal'] || 1}
+                onChange={(e) =>
+                  handleQuantityChange('modal', parseFloat(e.target.value) - (quantities['modal'] || 1))
+                }
+                style={styles.qtyInput}
+              />
+              <button onClick={() => handleQuantityChange('modal', 0.1)} style={styles.qtyBtn}>+</button>
+            </div>
+            <button style={styles.cartBtn} onClick={() => handleAddToCart(selectedProduct, 'modal')}>Add to Cart</button>
           </div>
         </div>
       )}
@@ -277,7 +305,6 @@ const styles = {
     height: '200px',
     objectFit: 'cover',
     borderRadius: '8px',
-    cursor: 'pointer',
   },
   name: {
     fontSize: '1.2rem',
@@ -297,6 +324,27 @@ const styles = {
     marginTop: '10px',
     cursor: 'pointer',
   },
+  quantityRow: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: '10px 0',
+    gap: '10px',
+  },
+  qtyInput: {
+    width: '60px',
+    textAlign: 'center',
+    padding: '6px',
+    fontSize: '16px',
+  },
+  qtyBtn: {
+    padding: '6px 12px',
+    fontSize: '18px',
+    cursor: 'pointer',
+    backgroundColor: '#eee',
+    border: '1px solid #ccc',
+    borderRadius: '6px',
+  },
   modalOverlay: {
     position: 'fixed',
     top: 0, left: 0, right: 0, bottom: 0,
@@ -312,7 +360,7 @@ const styles = {
     borderRadius: '10px',
     maxWidth: '600px',
     width: '90%',
-    maxHeight: '80vh',
+    maxHeight: '90vh',
     overflowY: 'auto',
   },
   modalImage: {
@@ -321,6 +369,14 @@ const styles = {
     objectFit: 'cover',
     borderRadius: '10px',
   },
+  knowMoreBtn: {
+    background: 'none',
+    border: 'none',
+    color: '#2e7d32',
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    marginLeft: '6px',
+  }
 };
 
 export default BuyerProductPage;

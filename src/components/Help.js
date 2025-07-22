@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Navbar from '../components/Navbar'; // ✅ Navbar imported
 
 const Help = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -11,54 +12,49 @@ const Help = () => {
   const supportData = [
     {
       title: "We're Here To Help",
-      description:
-        "Encountered an issue or have a question? Our dedicated team is ready to assist you.",
+      description: "Encountered an issue or have a question? Our dedicated team is ready to assist you.",
       icon: "📞",
     },
     {
       title: "Immediate Assistance? Chat With Us",
-      description:
-        "Click the chat icon on the bottom right of your screen to chat with one of our support agents.",
+      description: "Click the chat icon on the bottom right of your screen to chat with one of our support agents.",
       icon: "💬",
       action: () => setIsChatOpen(true),
     },
     {
       title: "Reach Out Directly",
-      description:
-        "Prefer to send us an email or give us a call? Email: support@farmflow.com Phone: 9999999999",
+      description: "Prefer to send us an email or give us a call? Email: support@farmflow.com Phone: 9999999999",
       icon: "📧",
     },
     {
       title: "Share Your Experience",
-      description:
-        "We'd love to hear about your experience. Leave a review to help us improve.",
+      description: "We'd love to hear about your experience. Leave a review to help us improve.",
       icon: "⭐",
       action: () => setIsFeedbackGiven(true),
     },
   ];
 
-  // Inline styles
   const pageStyle = {
     padding: '40px 20px',
     fontFamily: 'Arial, sans-serif',
     backgroundColor: '#f5fefe',
     color: '#213555',
-    textAlign: 'center',
+    minHeight: '100vh',
   };
 
   const headingStyle = {
     fontSize: '2.5rem',
     marginBottom: '30px',
     fontWeight: 'bold',
+    textAlign: 'center',
   };
 
   const cardContainerStyle = {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: '20px',
-    justifyContent: 'center',
-    alignItems: 'stretch',
-    padding: '0 10%',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+    gap: '25px',
+    maxWidth: '900px',
+    margin: '0 auto',
   };
 
   const cardStyle = {
@@ -95,12 +91,13 @@ const Help = () => {
   };
 
   const chatBoxStyle = {
-    marginTop: '20px',
+    marginTop: '30px',
     padding: '20px',
     backgroundColor: '#e6f7ff',
     borderRadius: '8px',
     maxWidth: '400px',
-    margin: '0 auto',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   };
 
   const chatInputStyle = {
@@ -129,82 +126,77 @@ const Help = () => {
   };
 
   return (
-    <div style={pageStyle}>
-      <h1 style={headingStyle}>Support Page</h1>
-      <div style={cardContainerStyle}>
-        {supportData.map((item, index) => (
-          <div
-            key={index}
-            style={cardStyle}
-            onClick={item.action}
-            onMouseEnter={(e) => Object.assign(e.currentTarget.style, cardHoverStyle)}
-            onMouseLeave={(e) => Object.assign(e.currentTarget.style, cardStyle)}
-          >
-            <div style={iconStyle}>{item.icon}</div>
-            <h3 style={titleStyle}>{item.title}</h3>
-            <p style={descriptionStyle}>{item.description}</p>
-          </div>
-        ))}
-      </div>
+    <>
+      <Navbar /> {/* ✅ Navbar kept as is */}
+      <div style={pageStyle}>
+        <h1 style={headingStyle}>Support Page</h1>
 
-      {/* Chatbox */}
-      {isChatOpen && (
-        <div style={chatBoxStyle}>
-          <h3>Chat With Us</h3>
-          <p>Hello! How can we assist you today?</p>
-          {chatHistory.map((message, index) => (
-            <div key={index} style={{ padding: '5px 0', textAlign: 'left' }}>
-              <strong>You:</strong> {message}
+        <div style={cardContainerStyle}>
+          {supportData.map((item, index) => (
+            <div
+              key={index}
+              style={cardStyle}
+              onClick={item.action}
+              onMouseEnter={(e) => Object.assign(e.currentTarget.style, cardHoverStyle)}
+              onMouseLeave={(e) => Object.assign(e.currentTarget.style, cardStyle)}
+            >
+              <div style={iconStyle}>{item.icon}</div>
+              <h3 style={titleStyle}>{item.title}</h3>
+              <p style={descriptionStyle}>{item.description}</p>
             </div>
           ))}
-          <input
-            type="text"
-            style={chatInputStyle}
-            placeholder="Type your message..."
-            value={chatMessage}
-            onChange={(e) => setChatMessage(e.target.value)}
-          />
-          <button style={buttonStyle} onClick={handleSendMessage}>
-            Send
-          </button>
-          <button style={buttonStyle} onClick={() => setIsChatOpen(false)}>
-            Close Chat
-          </button>
         </div>
-      )}
 
-      {/* Feedback Section */}
-      {isFeedbackGiven && (
-        <div style={{ marginTop: '20px', padding: '20px', backgroundColor: '#f9f9f9', borderRadius: '8px' }}>
-          <h3>Leave Your Rating</h3>
-          <div>
-            {[1, 2, 3, 4, 5].map((star) => (
-              <span
-                key={star}
-                onClick={() => {
-                  setRating(star);
-                  setFeedbackMessage('Thanks for your feedback!');
-                }}
-                style={{
-                  fontSize: '2rem',
-                  color: star <= rating ? '#f5b301' : '#ccc',
-                  cursor: 'pointer',
-                }}
-              >
-                ★
-              </span>
+        {/* Chat Section */}
+        {isChatOpen && (
+          <div style={chatBoxStyle}>
+            <h3>Chat With Us</h3>
+            <p>Hello! How can we assist you today?</p>
+            {chatHistory.map((message, index) => (
+              <div key={index} style={{ padding: '5px 0', textAlign: 'left' }}>
+                <strong>You:</strong> {message}
+              </div>
             ))}
+            <input
+              type="text"
+              style={chatInputStyle}
+              placeholder="Type your message..."
+              value={chatMessage}
+              onChange={(e) => setChatMessage(e.target.value)}
+            />
+            <button style={buttonStyle} onClick={handleSendMessage}>Send</button>
+            <button style={buttonStyle} onClick={() => setIsChatOpen(false)}>Close Chat</button>
           </div>
-          {feedbackMessage && <p style={{ color: '#3e5879' }}>{feedbackMessage}</p>}
-          <button
-            onClick={() => setIsFeedbackGiven(false)}
-            style={buttonStyle}
-          >
-            Close Feedback
-          </button>
-        </div>
-      )}
-    </div>
+        )}
+
+        {/* Feedback Section */}
+        {isFeedbackGiven && (
+          <div style={{ marginTop: '30px', padding: '20px', backgroundColor: '#f9f9f9', borderRadius: '8px', maxWidth: '400px', marginLeft: 'auto', marginRight: 'auto' }}>
+            <h3>Leave Your Rating</h3>
+            <div>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <span
+                  key={star}
+                  onClick={() => {
+                    setRating(star);
+                    setFeedbackMessage('Thanks for your feedback!');
+                  }}
+                  style={{
+                    fontSize: '2rem',
+                    color: star <= rating ? '#f5b301' : '#ccc',
+                    cursor: 'pointer',
+                  }}
+                >
+                  ★
+                </span>
+              ))}
+            </div>
+            {feedbackMessage && <p style={{ color: '#3e5879' }}>{feedbackMessage}</p>}
+            <button onClick={() => setIsFeedbackGiven(false)} style={buttonStyle}>Close Feedback</button>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

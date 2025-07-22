@@ -3,19 +3,9 @@ import { useCart } from './CartContext';
 import { useNavigate, Link } from 'react-router-dom';
 
 const CartPage = () => {
-  const { cartItems = [], removeFromCart, updateQuantity } = useCart();
+  const { cartItems = [], removeFromCart } = useCart();
   const navigate = useNavigate();
   const [promoCode, setPromoCode] = useState('');
-
-  const handleQuantityChange = (itemId, type) => {
-    const item = cartItems.find(i => i.id === itemId);
-    if (!item) return;
-    const currentQty = item.quantity || 1;
-    const newQty = type === 'inc' ? currentQty + 1 : currentQty - 1;
-    if (newQty >= 1) {
-      updateQuantity(itemId, newQty);
-    }
-  };
 
   const total = cartItems.reduce((sum, item) => {
     const qty = item.quantity || 1;
@@ -43,33 +33,11 @@ const CartPage = () => {
                   <h3 style={styles.name}>{item.name}</h3>
                   <p style={styles.desc}>{item.description}</p>
                   <p style={styles.price}>₹{item.price} per Kg</p>
+
                   <div style={styles.qtyRow}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <button
-                        onClick={() => handleQuantityChange(item.id, 'dec')}
-                        disabled={(item.quantity || 1) === 1}
-                        style={{
-                          padding: '4px 10px',
-                          fontSize: '1rem',
-                          cursor: 'pointer',
-                          backgroundColor: '#eee',
-                          border: '1px solid #ccc',
-                          borderRadius: '6px'
-                        }}
-                      >-</button>
-                      <span>{item.quantity || 1}</span>
-                      <button
-                        onClick={() => handleQuantityChange(item.id, 'inc')}
-                        style={{
-                          padding: '4px 10px',
-                          fontSize: '1rem',
-                          cursor: 'pointer',
-                          backgroundColor: '#eee',
-                          border: '1px solid #ccc',
-                          borderRadius: '6px'
-                        }}
-                      >+</button>
-                    </div>
+                    <p style={{ fontSize: '1rem', margin: '0' }}>
+                      Quantity: <strong>{item.quantity || 1}</strong>
+                    </p>
                     <button
                       onClick={() => removeFromCart(item.id)}
                       style={styles.removeBtn}
@@ -77,6 +45,7 @@ const CartPage = () => {
                       Remove
                     </button>
                   </div>
+
                   <p style={{ marginTop: '0.3rem', fontSize: '0.9rem', color: '#444' }}>
                     Subtotal: ₹{(item.price * (item.quantity || 1)).toFixed(2)}
                   </p>
@@ -148,14 +117,12 @@ const CartPage = () => {
                 Proceed to Buy
               </button>
 
-              {/* Continue shopping */}
               <Link to="/products" style={{ textAlign: 'center', marginTop: '10px', display: 'block', color: '#2e7d32' }}>
                 Continue Shopping
               </Link>
 
-              {/* Payment badges */}
               <div style={{ marginTop: '1rem', fontSize: '0.85rem', color: '#555' }}>
-                <p>🔒 Secure Checkout</p>
+                <p>🔐 Secure Checkout</p>
                 <p>💳 UPI / Netbanking / Cash on Delivery</p>
                 <p>📦 Return Policy: </p>
               </div>
