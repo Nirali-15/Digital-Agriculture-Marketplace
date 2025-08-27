@@ -76,7 +76,7 @@ const CheckoutPage = () => {
         color: '#2e7d32',
         marginBottom: '2rem'
       }}>
-        Checkout
+        Almost There !!
       </h2>
 
       {!orderPlaced ? (
@@ -114,7 +114,7 @@ const CheckoutPage = () => {
                   <div style={{ flex: '1' }}>
                     <h4>{item.name}</h4>
                     <p>Price: ₹{item.price}</p>
-                    <p>Qty: {item.quantity || 1}</p>
+                    <p>Qty: {item.quantity || 1}Kg </p>
                     <button onClick={() => removeFromCart(item.id)} style={{
                       marginTop: '0.5rem',
                       padding: '6px 12px',

@@ -55,22 +55,22 @@ const AboutUs = () => {
           <div style={styles.teamCard}>
             <img src={team1} alt="Team Member 1" style={styles.teamImage} />
             <h3 style={styles.teamName}>Nirali Bhanvadiya</h3>
-            <p style={styles.teamRole}>Frontend Developer & UI Designer</p>
+            <p style={styles.teamRole}>Frontend Developer</p>
           </div>
           <div style={styles.teamCard}>
             <img src={team2} alt="Team Member 2" style={styles.teamImage} />
-            <h3 style={styles.teamName}>Rahul Joshi</h3>
-            <p style={styles.teamRole}>Blockchain Developer</p>
+            <h3 style={styles.teamName}>Ankita Gohil</h3>
+            <p style={styles.teamRole}>AI/ML Developer</p>
           </div>
           <div style={styles.teamCard}>
             <img src={team3} alt="Team Member 3" style={styles.teamImage} />
-            <h3 style={styles.teamName}>Ayesha Patel</h3>
-            <p style={styles.teamRole}>Backend & Cloud Specialist</p>
+            <h3 style={styles.teamName}>Meenakshi Verma</h3>
+            <p style={styles.teamRole}>Backend Developer</p>
           </div>
           <div style={styles.teamCard}>
             <img src={team4} alt="Team Member 4" style={styles.teamImage} />
-            <h3 style={styles.teamName}>Ravi Mehta</h3>
-            <p style={styles.teamRole}>Data Analyst & Strategy</p>
+            <h3 style={styles.teamName}>Mayukha Sagar</h3>
+            <p style={styles.teamRole}>UI Designer</p>
           </div>
         </div>
       </div>

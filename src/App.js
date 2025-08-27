@@ -25,6 +25,7 @@ import CheckoutPage from './components/CheckoutPage';
 import { CartProvider } from './components/CartContext';
 import Newsletter from './components/Newsletter';
 import RequestSellerPage from './components/RequestSellerPage';
+// import NoProductsPage from "./pages/NoProductsPage";
 
 import './i18n.js';
 import './App.css';
@@ -98,7 +99,7 @@ function App() {
             <Route path="/account" element={<Account />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
-
+            {/* <Route path="/no-products" element={<NoProductsPage />} /> */}
             {/* Product Details */}
             <Route path="/product/:id" element={<ProductDetails products={products} />} />
           </Routes>

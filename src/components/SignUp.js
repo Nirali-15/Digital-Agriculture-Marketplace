@@ -15,6 +15,7 @@ const SignUp = () => {
     confirmPassword: "",
     acceptTerms: false,
     captchaAnswer: "",
+    role: "", // 🔹 Added Role field
   });
 
   const [errors, setErrors] = useState({});
@@ -63,6 +64,8 @@ const SignUp = () => {
 
     if (formData.password !== formData.confirmPassword)
       newErrors.confirmPassword = "Passwords do not match.";
+
+    if (!formData.role) newErrors.role = "Please select a role."; // 🔹 Validation for Role
 
     if (!formData.acceptTerms)
       newErrors.acceptTerms = "Please accept the terms and conditions.";
@@ -144,6 +147,15 @@ const SignUp = () => {
       borderRadius: "4px",
       outline: "none",
     },
+    select: {
+      width: "100%",
+      padding: "10px",
+      fontSize: "14px",
+      border: "1px solid #ccc",
+      borderRadius: "4px",
+      outline: "none",
+      backgroundColor: "#fff",
+    },
     formActions: {
       textAlign: "center",
       marginTop: "20px",
@@ -202,6 +214,7 @@ const SignUp = () => {
         <div style={styles.formHeader}>Create an Account</div>
         <div style={styles.formDescription}>Sign up to get started.</div>
         <form onSubmit={handleSubmit}>
+          {/* Full Name */}
           <div style={styles.formGroup}>
             <label style={styles.label}>Full Name</label>
             <input
@@ -213,6 +226,7 @@ const SignUp = () => {
             />
             {errors.fullName && <div style={styles.errorText}>{errors.fullName}</div>}
           </div>
+          {/* Username */}
           <div style={styles.formGroup}>
             <label style={styles.label}>Username</label>
             <input
@@ -224,6 +238,7 @@ const SignUp = () => {
             />
             {errors.username && <div style={styles.errorText}>{errors.username}</div>}
           </div>
+          {/* Email */}
           <div style={styles.formGroup}>
             <label style={styles.label}>Email</label>
             <input
@@ -235,6 +250,7 @@ const SignUp = () => {
             />
             {errors.email && <div style={styles.errorText}>{errors.email}</div>}
           </div>
+          {/* Phone */}
           <div style={styles.formGroup}>
             <label style={styles.label}>Phone Number</label>
             <input
@@ -246,6 +262,22 @@ const SignUp = () => {
             />
             {errors.phone && <div style={styles.errorText}>{errors.phone}</div>}
           </div>
+          {/* Role Dropdown */}
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Role</label>
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleInputChange}
+              style={styles.select}
+            >
+              <option value="">-- Select Role --</option>
+              <option value="Seller">Seller</option>
+              <option value="Buyer">Buyer</option>
+            </select>
+            {errors.role && <div style={styles.errorText}>{errors.role}</div>}
+          </div>
+          {/* Password */}
           <div style={{ ...styles.formGroup, ...styles.passwordWrapper }}>
             <label style={styles.label}>Password</label>
             <input
@@ -266,6 +298,7 @@ const SignUp = () => {
             </div>
             {errors.password && <div style={styles.errorText}>{errors.password}</div>}
           </div>
+          {/* Confirm Password */}
           <div style={styles.formGroup}>
             <label style={styles.label}>Confirm Password</label>
             <input
@@ -279,6 +312,7 @@ const SignUp = () => {
               <div style={styles.errorText}>{errors.confirmPassword}</div>
             )}
           </div>
+          {/* Terms */}
           <div style={styles.formGroup}>
             <label>
               <input
@@ -296,20 +330,7 @@ const SignUp = () => {
               <div style={styles.errorText}>{errors.acceptTerms}</div>
             )}
           </div>
-          {/* <div style={styles.formGroup}>
-            <label style={styles.label}>Captcha: {captcha.question}</label>
-            <input
-              type="text"
-              name="captchaAnswer"
-              value={formData.captchaAnswer}
-              onChange={handleInputChange}
-              style={styles.input}
-              placeholder="Answer"
-            />
-            {errors.captchaAnswer && (
-              <div style={styles.errorText}>{errors.captchaAnswer}</div>
-            )}
-          </div> */}
+          {/* Submit */}
           <div style={styles.formActions}>
             <button type="submit" style={styles.button}>
               Sign Up

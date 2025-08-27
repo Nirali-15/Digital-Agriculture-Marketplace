@@ -12,10 +12,10 @@ import farm2 from "../assets/farm2.jpg";
 import farm3 from "../assets/farm3.jpg";
 import maize from "../assets/maize.jpg";
 
-import member1 from '../assets/member1.jpg';
-import member2 from '../assets/member2.jpg';
-import member3 from '../assets/member3.jpg';
-import member4 from '../assets/member4.jpg';
+// import member1 from '../assets/member1.jpg';
+// import member2 from '../assets/member2.jpg';
+// import member3 from '../assets/member3.jpg';
+// import member4 from '../assets/member4.jpg';
 
 const fontLink = document.createElement('link');
 fontLink.href = 'https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Open+Sans&display=swap';
@@ -248,7 +248,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Meet the Team */}
+      {/* Meet the Team
       <section style={{ padding: '4rem 2rem', backgroundColor: '#ffffff' }}>
         <motion.h2 initial={{ opacity: 0, y: -30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}
           style={{ textAlign: 'center', fontSize: '2.5rem', color: '#2e7d32', marginBottom: '2rem' }}>
@@ -290,7 +290,7 @@ const HomePage = () => {
             </motion.div>
           ))}
         </div>
-      </section>
+      </section> */}
     </div>
   );
 };

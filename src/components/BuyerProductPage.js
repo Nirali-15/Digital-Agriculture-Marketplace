@@ -39,21 +39,24 @@ const BuyerProductPage = ({ products }) => {
     filterProducts();
   }, [filterProducts]);
 
+  // Handle Add to Cart
   const handleAddToCart = (product, index) => {
-    const quantity = parseFloat(quantities[index] || 1);
+    const quantity = quantities[index] || 10; // take exact quantity
     addToCart({ ...product, quantity });
     alert(`Added ${quantity} ${product.unit} of ${product.name} to cart!`);
   };
 
+  // Handle quantity change for both grid and modal
   const handleQuantityChange = (index, amount) => {
     setQuantities((prev) => {
-      const newQty = Math.max(0.1, parseFloat((prev[index] || 1) + amount).toFixed(1));
+      const newQty = Math.max(10, (prev[index] || 10) + amount);
       return { ...prev, [index]: newQty };
     });
   };
 
   return (
     <>
+      {/* Navbar */}
       <nav style={styles.navbar}>
         <div style={styles.logoContainer}>
           <img src={logo} alt="FarmFlow" style={styles.logo} />
@@ -69,6 +72,7 @@ const BuyerProductPage = ({ products }) => {
         </div>
       </nav>
 
+      {/* Categories */}
       <div style={styles.categoryContainer}>
         {categories.map((cat) => (
           <button
@@ -84,6 +88,7 @@ const BuyerProductPage = ({ products }) => {
         ))}
       </div>
 
+      {/* Filters */}
       <div style={styles.filterSection}>
         <input
           type="text"
@@ -92,7 +97,6 @@ const BuyerProductPage = ({ products }) => {
           onChange={(e) => setSearchTerm(e.target.value)}
           style={styles.searchInput}
         />
-
         <div style={styles.filterRow}>
           <label>
             <input type="checkbox" checked={onlyOrganic} onChange={() => setOnlyOrganic(!onlyOrganic)} /> Organic
@@ -105,6 +109,7 @@ const BuyerProductPage = ({ products }) => {
         </div>
       </div>
 
+      {/* Banners */}
       <div style={styles.bannerGrid}>
         {banners.map((img, index) => (
           <img key={index} src={img} alt={`Banner ${index + 1}`} style={styles.bannerImage} />
@@ -112,8 +117,25 @@ const BuyerProductPage = ({ products }) => {
       </div>
 
       <h2 style={styles.heading}>Explore Products</h2>
+
+      {/* Product Grid */}
       {filteredProducts.length === 0 ? (
-        <p style={{ textAlign: 'center' }}>No products available.</p>
+        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+          <h2 style={{ color: '#2e7d32' }}>No Products Available</h2>
+          <p>Sorry, there are no products matching your criteria.</p>
+          <Link to="/buyer" style={{
+              display: 'inline-block',
+              padding: '10px 20px',
+              marginTop: '20px',
+              backgroundColor: '#2e7d32',
+              color: '#fff',
+              borderRadius: '8px',
+              textDecoration: 'none',
+              fontWeight: 'bold',
+            }}>
+            Go Back to Home
+          </Link>
+        </div>
       ) : (
         <div style={styles.grid}>
           {filteredProducts.map((prod, index) => {
@@ -125,25 +147,22 @@ const BuyerProductPage = ({ products }) => {
                 <p style={styles.price}>₹{prod.price} / {prod.unit}</p>
                 <p>
                   {prod.description.slice(0, 50)}...
-                  <button
-                    onClick={() => setSelectedProduct(prod)}
-                    style={styles.knowMoreBtn}
-                  >
-                    Know More
-                  </button>
+                  <button onClick={() => setSelectedProduct(prod)} style={styles.knowMoreBtn}>Know More</button>
                 </p>
                 <div style={styles.quantityRow}>
-                  <button onClick={() => handleQuantityChange(index, -0.1)} style={styles.qtyBtn}>-</button>
+                  <button onClick={() => handleQuantityChange(index, -1)} style={styles.qtyBtn}>-</button>
                   <input
                     type="number"
-                    step="0.1"
-                    value={quantities[index] || 1}
-                    onChange={(e) =>
-                      handleQuantityChange(index, parseFloat(e.target.value) - (quantities[index] || 1))
-                    }
+                    min="10"
+                    step="1"
+                    value={quantities[index] || 10}
+                    onChange={(e) => {
+                      const val = Math.max(10, parseInt(e.target.value) || 10);
+                      setQuantities((prev) => ({ ...prev, [index]: val }));
+                    }}
                     style={styles.qtyInput}
                   />
-                  <button onClick={() => handleQuantityChange(index, 0.1)} style={styles.qtyBtn}>+</button>
+                  <button onClick={() => handleQuantityChange(index, 1)} style={styles.qtyBtn}>+</button>
                 </div>
                 <button style={styles.cartBtn} onClick={() => handleAddToCart(prod, index)}>Add to Cart</button>
               </div>
@@ -152,6 +171,7 @@ const BuyerProductPage = ({ products }) => {
         </div>
       )}
 
+      {/* Product Modal */}
       {selectedProduct && (
         <div style={styles.modalOverlay} onClick={() => setSelectedProduct(null)}>
           <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -170,17 +190,19 @@ const BuyerProductPage = ({ products }) => {
             <p><b>Shipping:</b> Ships in 3–5 business days</p>
 
             <div style={styles.quantityRow}>
-              <button onClick={() => handleQuantityChange('modal', -0.1)} style={styles.qtyBtn}>-</button>
+              <button onClick={() => handleQuantityChange('modal', -1)} style={styles.qtyBtn}>-</button>
               <input
                 type="number"
-                step="0.1"
-                value={quantities['modal'] || 1}
-                onChange={(e) =>
-                  handleQuantityChange('modal', parseFloat(e.target.value) - (quantities['modal'] || 1))
-                }
+                min="10"
+                step="1"
+                value={quantities['modal'] || 10}
+                onChange={(e) => {
+                  const val = Math.max(10, parseInt(e.target.value) || 10);
+                  setQuantities((prev) => ({ ...prev, modal: val }));
+                }}
                 style={styles.qtyInput}
               />
-              <button onClick={() => handleQuantityChange('modal', 0.1)} style={styles.qtyBtn}>+</button>
+              <button onClick={() => handleQuantityChange('modal', 1)} style={styles.qtyBtn}>+</button>
             </div>
             <button style={styles.cartBtn} onClick={() => handleAddToCart(selectedProduct, 'modal')}>Add to Cart</button>
           </div>

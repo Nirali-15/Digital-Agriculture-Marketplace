@@ -36,7 +36,7 @@ const CartPage = () => {
 
                   <div style={styles.qtyRow}>
                     <p style={{ fontSize: '1rem', margin: '0' }}>
-                      Quantity: <strong>{item.quantity || 1}</strong>
+                      Quantity: <strong>{item.quantity || 1} Kg</strong>
                     </p>
                     <button
                       onClick={() => removeFromCart(item.id)}
